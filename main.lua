@@ -274,8 +274,8 @@ local function onCollide(event)
         if o == ground then
             debugText.text = "Touching the ground!!!!"
         else
-            b:takeDamge(5)
-            print(b.health)
+            b.takeDamage(5)
+            debugText.text = "" .. b.health
         end
     end
 end
