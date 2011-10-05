@@ -7,7 +7,7 @@ function Building:create(x, y, btype, status, bldingSet)
     setmetatable(bldng, {__index = sprite})
     bldng.x = x
     bldng.y = y
-    bldng.type = type
+    bldng.btype = btype
     bldng.status = status
     bldng.b_sprite = sprite.newSprite(bldingSet)
     bldng.b_sprite.x = x
