@@ -56,10 +56,10 @@ local bld = Building:create(math.random(200, WORLD_WIDTH - 200),
                                   1, 
                                   buildingSet)
 
-world:insert(bld.b_sprite)
+world:insert(bld)
 table.insert(buildings, bld)
-table.insert(shakable, bld.b_sprite)
-physics.addBody(bld.b_sprite, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly})
+table.insert(shakable, bld)
+physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly})
 
 --[[
 local building = display.newImage("building2.png")
@@ -100,7 +100,7 @@ physics.addBody(right_edge, "static", {bounce = 0.7})
 right_edge.isVisible = false
 
 physics.addBody(ground, "static", {friction = 10, bounce = 0.4})
-buildingJoint = physics.newJoint("weld", ground, bld.b_sprite, bld.x, bld.y + 145)
+buildingJoint = physics.newJoint("weld", ground, bld, bld.x, bld.y + 145)
 
 eq_power = 0
 eq = false
