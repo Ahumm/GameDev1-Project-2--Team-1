@@ -1,16 +1,15 @@
 sprite = require "sprite"
 
 Building = {}
-Building.__index = sprite
 
-function Building.create(x, y, btype, status, bldingSet)
-    local bldng = {}
-    setmetatable(bldng, Building)
+function Building:create(x, y, btype, status, bldingSet)
+    --local bldng = {}
+    --setmetatable(bldng, {__index = sprite})
+    bldng = sprite.newSprite(bldingSet)
     bldng.x = x
     bldng.y = y
     bldng.type = type
     bldng.status = status
-    bldng.b_sprite = sprite.newSprite(bldingSet)
     if type == 0 then
         bldng.health = 100
         bldng.poly = {-100,-150, 100, -150, 100, 150, -100, 150}
