@@ -29,3 +29,9 @@ function Building:takeDamage(damage)
     end
 end
 
+function Building:dead()
+    if self.health == 0 then
+        print("MEDIC\n")
+    end
+end
+
