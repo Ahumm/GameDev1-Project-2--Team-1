@@ -1,5 +1,7 @@
+sprite = require "sprite"
+
 Building = {}
-Building.__index = Building
+Building.__index = sprite
 
 function Building.create(x, y, btype, status)
     x = x or 0
