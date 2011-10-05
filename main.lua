@@ -273,3 +273,5 @@ for i=1, world.numChildren do
     world[i].x = world[i].x - ((WORLD_WIDTH - display.contentWidth) / 2)
     world[i].y = world[i].y - (WORLD_HEIGHT - display.contentHeight)
 end
+
+debugText.text = "" .. bld.
