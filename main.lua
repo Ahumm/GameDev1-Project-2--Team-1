@@ -1,5 +1,6 @@
 sprite = require "sprite"
 physics = require "physics"
+building_class = require "building"
 
 --start the physical simulation
 physics.start()
