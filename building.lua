@@ -13,7 +13,7 @@ function Building.create(x, y, btype, status)
     bldng.type = type
     bldng.status = status
     if type == 0 then
-        bldng.health = 100
+        bldng.health = 100 
     else
         health = 0
     end
