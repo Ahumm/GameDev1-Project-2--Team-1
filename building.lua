@@ -1,7 +1,11 @@
 Building = {}
 Building.__index = Building
 
-function Building.create(x or 0, y or 0, type or 0, status or 0)
+function Building.create(x, y, type, status)
+    x = x or 0
+    y = y or 0
+    type = type on 0
+    status = status or 0
     local bldng = {}
     setmetatable(bldng, Building)
     bldng.x = x
