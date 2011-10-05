@@ -3,19 +3,17 @@ sprite = require "sprite"
 Building = {}
 Building.__index = sprite
 
-function Building.create(x, y, btype, status)
-    x = x or 0
-    y = y or 0
-    btype = btype or 0
-    status = status or 0
+function Building.create(x, y, btype, status, bldingSet)
     local bldng = {}
     setmetatable(bldng, Building)
     bldng.x = x
     bldng.y = y
     bldng.type = type
     bldng.status = status
+    bldng.b_sprite = sprite.newSprite(bldingSet)
     if type == 0 then
-        bldng.health = 100 
+        bldng.health = 100
+        bldng.poly = {-100,-150, 100, -150, 100, 150, -100, 150}
     else
         health = 0
     end
