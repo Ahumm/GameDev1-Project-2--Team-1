@@ -228,9 +228,6 @@ local function onKeyEvent(event)
         penguinpoly = {-30, -70, 30, -70, 70, 0, 40, 60, -40, 60, -70, 0}
         physics.addBody(penguin, {density = 1.0, friction = 10, bounce = 0.4, shape=penguinpoly})
     end
-    local phase = event.phase
-    local keyName = event.keyName
-    debugText.text = "("..phase.." , " .. keyName ..")"
     return true
 end
 
@@ -258,15 +255,12 @@ local function worldTouch(event)
             world[i].y = event.y - world[i].y0
         end
     end 
-    debugText.text = "(" .. (event.x - background.x0) .. ", " .. (event.y - background.y0) .. ")\
-                    \n(" .. display.contentWidth .. ", " .. display.contentHeight .. ")\
-                    \n\n" .. (WORLD_WIDTH/2) .. ", " .. (WORLD_HEIGHT/2)
 end
 
 local function onCollide(event)
     local b = nil
     local o = nil
-    for b_ in buildings do
+    for i, b_ in pairs(buildings) do
         if (event.object1 == b_) then
             b = event.object1
             o = event.object2
@@ -280,7 +274,8 @@ local function onCollide(event)
         if o == ground then
             debugText.text = "Touching the ground!!!!"
         else
-            b:takeDamge(5)
+            b.takeDamage(5)
+            debugText.text = "" .. b.health
         end
     end
 end
