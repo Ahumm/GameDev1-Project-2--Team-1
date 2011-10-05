@@ -21,9 +21,9 @@ function Building.create(x, y, btype, status)
 end
 
 function Building:TakeDamage(damage)
-    self.health -= damage
+    self.health =  self.health - damage
     if self.health <= 0 then
-        self.health == 0
+        self.health = 0
     end
 end
 
