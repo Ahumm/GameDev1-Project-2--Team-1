@@ -274,4 +274,3 @@ for i=1, world.numChildren do
     world[i].y = world[i].y - (WORLD_HEIGHT - display.contentHeight)
 end
 
-debugText.text = "" .. bld.
