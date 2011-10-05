@@ -22,7 +22,7 @@ function Building:create(x, y, btype, status, bldingSet)
     return bldng
 end
 
-function Building:TakeDamage(damage)
+function Building:takeDamage(damage)
     self.health =  self.health - damage
     if self.health <= 0 then
         self.health = 0

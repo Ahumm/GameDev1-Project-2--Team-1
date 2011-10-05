@@ -263,9 +263,32 @@ local function worldTouch(event)
                     \n\n" .. (WORLD_WIDTH/2) .. ", " .. (WORLD_HEIGHT/2)
 end
 
+local function onCollide(event)
+    local b = nil
+    local o = nil
+    for b_ in buildings do
+        if (event.object1 == b_) then
+            b = event.object1
+            o = event.object2
+        end
+        if (event.object2 == b_) then
+            b = event.object2
+            o = event.object1
+        end
+    end
+    if b then
+        if o == ground then
+            debugText.text = "Touching the ground!!!!"
+        else
+            b:takeDamge(5)
+        end
+    end
+end
+
 world:addEventListener("touch", worldTouch)
 ground:addEventListener("touch", groundTouch)
 world:addEventListener("touch", worldTouch)
+Runtime:addEventListener("collision", onCollide)
 Runtime:addEventListener( "accelerometer", acc )
 Runtime:addEventListener( "key", onKeyEvent );
 
