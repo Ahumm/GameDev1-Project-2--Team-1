@@ -1,10 +1,11 @@
 sprite = require "sprite"
 physics = require "physics"
+require "Shard"
 require "Building"
 
 --start the physical simulation
 physics.start()
---physics.setDrawMode("hybrid")
+physics.setDrawMode("hybrid")
 --background color
 
 MAX_EQ_POWER = 130
@@ -50,11 +51,14 @@ local buildingSheet = sprite.newSpriteSheet("building1.png", 200, 300)
 local buildingSet = sprite.newSpriteSet(buildingSheet, 1, 2)
 sprite.add(buildingSet, "anim", 1, 2, 600)
 
+local shardSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+
 local bld = Building:create(math.random(200, WORLD_WIDTH - 200), 
                                   WORLD_HEIGHT - GROUND_HEIGHT - 151, 
                                   0, 
                                   1, 
-                                  buildingSet)
+                                  buildingSet,
+                                  shardSheet)
 
 world:insert(bld)
 table.insert(buildings, bld)
@@ -107,6 +111,7 @@ eq = false
 post_eq = false
 local shake_dir = 1
 local shake_dir_start = shake_dir
+local shard_list = nil
 
 
 function shake()
@@ -187,6 +192,47 @@ local function circleInBounds()
     end
 end
 
+local function addShards()
+    shards = shard_list
+    for i, i_shard in pairs(shards) do
+    
+        myText.text = "BROKEN! " .. i
+        world:insert(i_shard)
+        --i_shard.isVisible = false
+        table.insert(shakable, i_shard)
+        table.insert(penguins, i_shard)
+        if #i_shard.polys == 6 then
+            physics.addBody(i_shard, 
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[3]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[4]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[5]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[6]})
+        elseif #i_shard.polys == 7 then
+            physics.addBody(i_shard, 
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[3]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[4]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[5]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[6]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[7]})
+        elseif #i_shard.polys == 8 then
+            physics.addBody(i_shard, 
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[3]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[4]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[5]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[6]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[7]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[8]})
+        end
+    end
+    shard_list = nil
+end
+
 local function acc(event)
     if event.isShake == true and eq == false and circleInBounds()  and post_eq == false then
         myText.text = ""
@@ -258,24 +304,40 @@ local function worldTouch(event)
 end
 
 local function onCollide(event)
-    local b = nil
-    local o = nil
-    for i, b_ in pairs(buildings) do
-        if (event.object1 == b_) then
-            b = event.object1
-            o = event.object2
+    if event.phase == "began" then
+        local b = nil
+        local o = nil
+        local index = nil
+        for i, b_ in pairs(buildings) do
+            if (event.object1 == b_) then
+                b = event.object1
+                o = event.object2
+                index = i
+            end
+            if (event.object2 == b_) then
+                b = event.object2
+                o = event.object1
+                index = i
+            end
         end
-        if (event.object2 == b_) then
-            b = event.object2
-            o = event.object1
-        end
-    end
-    if b then
-        if o == ground then
-            debugText.text = "Touching the ground!!!!"
-        else
-            b.takeDamage(5)
-            debugText.text = "" .. b.health
+        if b then
+            if o == ground then
+                debugText.text = "Touching the ground!!!!"
+            else
+                
+                b.takeDamage(5)
+                debugText.text = "" .. b.health
+                local isDead = b.isDead()
+                if isDead then
+                    if b then
+                        table.remove(buildings, index)
+                        b:removeSelf()
+                        b = nil
+                    end
+                    shard_list = isDead
+                    timer.performWithDelay(3000, addShards)
+                end
+            end
         end
     end
 end
@@ -291,4 +353,5 @@ for i=1, world.numChildren do
     world[i].x = world[i].x - ((WORLD_WIDTH - display.contentWidth) / 2)
     world[i].y = world[i].y - (WORLD_HEIGHT - display.contentHeight)
 end
+bld:applyLinearImpulse(-95, -3.5, bld.x, bld.y)
 
