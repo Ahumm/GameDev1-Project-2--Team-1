@@ -193,15 +193,21 @@ local function circleInBounds()
 end
 
 local function addShards()
-    shards = shard_list
-    for i, i_shard in pairs(shards) do
+    for i, i_shard in pairs(shard_list) do
     
         myText.text = "BROKEN! " .. i
         world:insert(i_shard)
         --i_shard.isVisible = false
         table.insert(shakable, i_shard)
         table.insert(penguins, i_shard)
-        if #i_shard.polys == 6 then
+        if #i_shard.polys == 5 then
+            physics.addBody(i_shard, 
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[3]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[4]},
+                            {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[5]})
+        elseif #i_shard.polys == 6 then
             physics.addBody(i_shard, 
                             {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
                             {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]},
@@ -253,7 +259,8 @@ local function acc(event)
         eq_power = eq_power + math.abs(event.zInstant)
     end
     if post_eq then
-        physics.setGravity(10 * event.xGravity, 0 )
+        physics.setGravity(0, GRAVITY)
+        --physics.setGravity(10 * event.yGravity, GRAVITY / 10)
     end
 end
 
@@ -330,6 +337,12 @@ local function onCollide(event)
                 local isDead = b.isDead()
                 if isDead then
                     if b then
+                        for j, thing in pairs(shakable) do
+                            if thing == b then
+                                table.remove(shakable, j)
+                                break
+                            end
+                        end
                         table.remove(buildings, index)
                         b:removeSelf()
                         b = nil
@@ -352,6 +365,8 @@ Runtime:addEventListener( "key", onKeyEvent );
 for i=1, world.numChildren do
     world[i].x = world[i].x - ((WORLD_WIDTH - display.contentWidth) / 2)
     world[i].y = world[i].y - (WORLD_HEIGHT - display.contentHeight)
+    world[i].x0 = world[i].x
+    world[i].y0 = world[i].y
 end
 bld:applyLinearImpulse(-95, -3.5, bld.x, bld.y)
 

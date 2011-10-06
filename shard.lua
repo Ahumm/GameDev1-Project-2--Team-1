@@ -9,6 +9,7 @@ function Shard:create(x, y, shardSet, polys)
     shrd.x = x
     shrd.y = y
     shrd.polys = polys
+    shrd.field = "Blarg"
     return shrd
 end
 
