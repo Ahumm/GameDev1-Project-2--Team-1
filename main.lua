@@ -199,6 +199,7 @@ local function addShards()
         myText.text = "BROKEN! " .. i
         world:insert(i_shard)
         --i_shard.isVisible = false
+        table.insert(shakable, i_shard)
         table.insert(penguins, i_shard)
         if #i_shard.polys == 6 then
             physics.addBody(i_shard, 
