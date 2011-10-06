@@ -179,7 +179,7 @@ local function endQuake()
     circle.y = -100
     eq_power = 0
     post_eq = true
-    timer.performWithDelay(8000, endPostQuake)
+    timer.performWithDelay(500, endPostQuake)
     debugText.text = "POST QUAKE MODE"
 end
 
