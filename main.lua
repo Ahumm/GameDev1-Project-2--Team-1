@@ -331,11 +331,12 @@ local function onCollide(event)
                 if isDead then
                     if b then
                         table.remove(buildings, index)
+                        table.remove(shakable, index)
                         b:removeSelf()
                         b = nil
                     end
                     shard_list = isDead
-                    timer.performWithDelay(3000, addShards)
+                    timer.performWithDelay(30, addShards)
                 end
             end
         end
