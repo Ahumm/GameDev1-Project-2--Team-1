@@ -234,7 +234,11 @@ local function addShards()
                             {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[7]},
                             {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[8]})
         end
-        i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
+        if i == 1 then
+            physics.newJoint("weld", ground, i_shard, i_shard.x, i_shard.y + 145)
+        else
+            i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
+        end
     end
     shard_list = nil
 end
@@ -349,6 +353,7 @@ local function onCollide(event)
                             end
                         end
                         table.remove(buildings, index)
+                        table.remove(shakable, index)
                         b:removeSelf()
                         b = nil
                     end
