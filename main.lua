@@ -348,7 +348,7 @@ local function onCollide(event)
                         b = nil
                     end
                     shard_list = isDead
-                    timer.performWithDelay(3000, addShards)
+                    timer.performWithDelay(30, addShards)
                 end
             end
         end
