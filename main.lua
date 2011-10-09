@@ -344,6 +344,7 @@ local function onCollide(event)
                             end
                         end
                         table.remove(buildings, index)
+                        table.remove(shakable, index)
                         b:removeSelf()
                         b = nil
                     end
