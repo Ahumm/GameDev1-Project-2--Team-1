@@ -237,10 +237,31 @@ local function addShards()
         if i == 1 then
             physics.newJoint("weld", ground, i_shard, i_shard.x, i_shard.y + 145)
         else
-            i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
+            --i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
         end
     end
     shard_list = nil
+end
+
+local function damage_building(b, damage, vx, vy, ox, oy)
+    b.takeDamage(damage)
+    debugText.text = "\n" .. b.health .. "\n(" .. damage .. ")"
+    local isDead = b.isDead(vx/6, vy/6, ox, oy)
+    if isDead then
+        if b then
+            for j, thing in pairs(shakable) do
+                if thing == b then
+                    table.remove(shakable, j)
+                    break
+                end
+            end
+            table.remove(buildings, index)
+            b:removeSelf()
+            b = nil
+        end
+        shard_list = isDead
+        addShards()
+    end
 end
 
 local function acc(event)
@@ -341,25 +362,8 @@ local function onCollide(event)
                 vx, vy = o:getLinearVelocity()
                 damage = math.sqrt(math.pow(vx,2) + math.pow(vy,2)) / 12
                 
-                b.takeDamage(damage)
-                debugText.text = "" .. b.health .. "\n(" .. damage .. ")"
-                local isDead = b.isDead(vx/6,vy/6,o.x,o.y)
-                if isDead then
-                    if b then
-                        for j, thing in pairs(shakable) do
-                            if thing == b then
-                                table.remove(shakable, j)
-                                break
-                            end
-                        end
-                        table.remove(buildings, index)
-                        table.remove(shakable, index)
-                        b:removeSelf()
-                        b = nil
-                    end
-                    shard_list = isDead
-                    timer.performWithDelay(30, addShards)
-                end
+                
+                timer.performWithDelay(30, function() return damage_building(b, damage, vx, vy, o.x, o.y) end)
             end
         end
     end
