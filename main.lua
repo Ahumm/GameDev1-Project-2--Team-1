@@ -235,6 +235,9 @@ local function addShards()
                             {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[7]},
                             {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[8]})
         end
+        if i == 1 then
+            physics.newJoint("weld", ground, i_shard, i_shard.x, i_shard.y + 145)
+        end
     end
     shard_list = nil
 end
