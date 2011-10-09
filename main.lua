@@ -35,7 +35,7 @@ function mainMenu()
     soundButton:play()
     
     -- Main Menu Sound
-    BGSound = audio.loadSound("sound_of_storms.mp3")
+    BGSound = audio.loadSound("song_of_storms.mp3")
     BGChannel = audio.play(BGSound, {loops = -1})
     
     newGameButton:addEventListener("touch", init)
