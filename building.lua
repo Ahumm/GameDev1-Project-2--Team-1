@@ -38,7 +38,6 @@ function Building:create(x, y, btype, status, bldingSet, shardSheet)
                                table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 3, 1),{{100,-104,100,65,76,-51,86,-89},{76,-51,86,-89,66,-96},{76,-51,100,65,16,-1,27,-51},{27,-51,13,-68,36,-69,76,-51},{5,-52,27,-51,10,-47},{10,-47,27,-51,16,-1,-8,-28},{16,-1,60,80,49,95,30,82,1,14},{16,-1,100,65,86,78,60,80}}))
                                table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 4, 1),{{-99,-66,-99,-150,100,-150,-89,-68},{-89,-68,100,-150,-21,-83},{-89,-68,-21,-83,-59,-48},{-21,-83,100,-150,64,-97},{-21,-83,64,-97,36,-69,13,-68},{13,-68,25,-51,4,-53,-21,-83},{36,-69,64,-97,74,-52},{64,-97,100,-150,100,-103,84,-90}}))
                            end
-                           bldng.dead = true
                            return shards
                        end
                        return nil

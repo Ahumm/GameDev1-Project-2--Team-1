@@ -258,6 +258,7 @@ local function damage_building(b, damage, vx, vy, ox, oy)
     local isDead = b.isDead(vx/6, vy/6, ox, oy)
     if isDead then
         if not b.dead then
+            b.dead = true
             for j, thing in pairs(shakable) do
                 if thing == b then
                     table.remove(shakable, j)
