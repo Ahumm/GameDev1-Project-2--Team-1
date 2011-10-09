@@ -246,6 +246,7 @@ local function addShards()
             physics.newJoint("weld", ground, i_shard, i_shard.x, i_shard.y + 145)
         else
             --i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
+            a = 0
         end
     end
     shard_list = nil
@@ -256,7 +257,7 @@ local function damage_building(b, damage, vx, vy, ox, oy)
     debugText.text = "\n" .. b.health .. "\n(" .. damage .. ")"
     local isDead = b.isDead(vx/6, vy/6, ox, oy)
     if isDead then
-        if b then
+        if not b.dead then
             for j, thing in pairs(shakable) do
                 if thing == b then
                     table.remove(shakable, j)
@@ -266,9 +267,9 @@ local function damage_building(b, damage, vx, vy, ox, oy)
             table.remove(buildings, index)
             b:removeSelf()
             b = nil
+            shard_list = isDead
+            addShards()
         end
-        shard_list = isDead
-        addShards()
     end
 end
 
