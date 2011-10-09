@@ -253,6 +253,9 @@ local function addShards()
 end
 
 local function damage_building(b, damage, vx, vy, ox, oy)
+    if b.dead then 
+        return
+    end
     b.takeDamage(damage)
     debugText.text = "\n" .. b.health .. "\n(" .. damage .. ")"
     local isDead = b.isDead(vx/6, vy/6, ox, oy)
@@ -267,7 +270,7 @@ local function damage_building(b, damage, vx, vy, ox, oy)
             end
             table.remove(buildings, index)
             b:removeSelf()
-            b = nil
+            --b = nil
             shard_list = isDead
             addShards()
         end

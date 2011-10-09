@@ -25,6 +25,7 @@ function Building:create(x, y, btype, status, bldingSet, shardSheet)
                            bldng.health =  bldng.health - damage
                            if bldng.health <= 0 then
                                bldng.health = 0
+                               bldng.dead = true
                            end
                         end
     
