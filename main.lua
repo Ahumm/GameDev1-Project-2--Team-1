@@ -7,8 +7,16 @@ require "Building"
 physics.start()
 --physics.setDrawMode("hybrid")
 --background color
+local isSimulator = "simulator" == system.getInfo("environment")
 
-MAX_EQ_POWER = 130
+-- Accelerator is not supported on Simulator
+--
+if isSimulator then
+    MAX_EQ_POWER = 70
+else
+    MAX_EQ_POWER = 130
+end
+
 GROUND_HEIGHT = 100
 
 --WORLD_WIDTH = 1000
