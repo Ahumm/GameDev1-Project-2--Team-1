@@ -58,11 +58,13 @@ function levelSelectMenu()
     -- Add level selection buttons
     local levelButtons = {}
     
+    local levelsPerRow = 2
+    
     for i=1,4 do
-        levelButtons[i] = display.newImage(("level" .. i .. "Button.png"), (((i - 1) % 5 ) + 1) * 120, 100 + ((math.floor(i / 5)) * 70))
+        levelButtons[i] = display.newImage(("level" .. i .. "Button.png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
         levelButtons[i].id = i
         levelSelectGroup:insert(levelButtons[i])
-        levelButtons[i]:addEventLisenter("touch", loadLevel)
+        levelButtons[i]:addEventListener("touch", loadLevel)
     end
     
 end
@@ -103,6 +105,9 @@ function toggleSound(event)
 end
 
 function loadLevel(event)
+    if event.phase == "began" then
+        print("Loading level " .. event.target.id)
+    end
 end
 
 mainMenu()
