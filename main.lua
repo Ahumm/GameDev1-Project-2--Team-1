@@ -1,8 +1,27 @@
 physics = require "physics"
 sprite = require "sprite"
 audio = require "audio"
+require "Shard"
+require "Building"
 
+
+
+--start the physical simulation
 physics.start()
+--physics.setDrawMode("hybrid")
+--background color
+local isSimulator = "simulator" == system.getInfo("environment")
+
+-- Accelerator is not supported on Simulator
+--
+if isSimulator then
+    MAX_EQ_POWER = 70
+else
+    MAX_EQ_POWER = 130
+end
+
+
+
 
 local newGame = 1
 local levelSelect = 2
@@ -74,7 +93,10 @@ function inGameMenu()
 end
 
 function inGame()
-    inGameGroup = display.newGroup()
+    inGameGroup = display.newGroup
+    
+    
+    
 end
 
 function init(event)
