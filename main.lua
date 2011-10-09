@@ -5,7 +5,7 @@ require "Building"
 
 --start the physical simulation
 physics.start()
-physics.setDrawMode("hybrid")
+--physics.setDrawMode("hybrid")
 --background color
 
 MAX_EQ_POWER = 130
@@ -54,7 +54,7 @@ sprite.add(buildingSet, "anim", 1, 2, 600)
 local shardSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
 
 local bld = Building:create(math.random(200, WORLD_WIDTH - 200), 
-                                  WORLD_HEIGHT - GROUND_HEIGHT - 151, 
+                                  WORLD_HEIGHT - GROUND_HEIGHT - 150, 
                                   0, 
                                   1, 
                                   buildingSet,
@@ -126,7 +126,6 @@ end
 
 function shake_world()
     if eq then
-        debugText.text = shake_dir * 7
         for i=1, world.numChildren do
             world[i].x = world[i].x + (shake_dir * 7)
         end
@@ -137,7 +136,7 @@ end
 
 local function endPostQuake()
     post_eq = false
-    debugText.text = "Normal mode"
+    --debugText.text = "Normal mode"
     physics.setGravity(0, GRAVITY)
 end
 
@@ -146,7 +145,7 @@ local function endQuake()
     for i, penguin in pairs(shakable) do
         penguin:setLinearVelocity(0, 0)
         force = 30000000 * math.min(1, eq_power / MAX_EQ_POWER) + 4500000
-        debugText.text = " " .. eq_power .. " vs. " .. MAX_EQ_POWER .. " : " .. eq_power / MAX_EQ_POWER
+        --debugText.text = " " .. eq_power .. " vs. " .. MAX_EQ_POWER .. " : " .. eq_power / MAX_EQ_POWER
         angle = math.atan((math.abs(circle.x - penguin.x))/(math.abs(circle.y - penguin.y)))
         distance = math.sqrt(math.pow(circle.x - penguin.x,2) + math.pow(circle.y - penguin.y,2))
         if circle.x >= penguin.x then
@@ -180,7 +179,7 @@ local function endQuake()
     eq_power = 0
     post_eq = true
     timer.performWithDelay(500, endPostQuake)
-    debugText.text = "POST QUAKE MODE"
+    --debugText.text = "POST QUAKE MODE"
 end
 
 local function circleInBounds()
@@ -235,6 +234,7 @@ local function addShards()
                             {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[7]},
                             {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[8]})
         end
+        i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
     end
     shard_list = nil
 end
@@ -331,10 +331,15 @@ local function onCollide(event)
             if o == ground then
                 debugText.text = "Touching the ground!!!!"
             else
+                local damage = 0
+                local vx = 0
+                local vy = 0
+                vx, vy = o:getLinearVelocity()
+                damage = math.sqrt(math.pow(vx,2) + math.pow(vy,2)) / 12
                 
-                b.takeDamage(5)
-                debugText.text = "" .. b.health
-                local isDead = b.isDead()
+                b.takeDamage(damage)
+                debugText.text = "" .. b.health .. "\n(" .. damage .. ")"
+                local isDead = b.isDead(vx/6,vy/6,o.x,o.y)
                 if isDead then
                     if b then
                         for j, thing in pairs(shakable) do
@@ -348,7 +353,7 @@ local function onCollide(event)
                         b = nil
                     end
                     shard_list = isDead
-                    timer.performWithDelay(3000, addShards)
+                    timer.performWithDelay(30, addShards)
                 end
             end
         end
