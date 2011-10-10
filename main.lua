@@ -27,6 +27,7 @@ local newGame = 1
 local levelSelect = 2
 local soundState = 1
 audio.setVolume(0.0)
+local selectedLevel = 1
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
@@ -83,7 +84,7 @@ function levelSelectMenu()
         levelButtons[i] = display.newImage(("level" .. i .. "Button.png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
         levelButtons[i].id = i
         levelSelectGroup:insert(levelButtons[i])
-        levelButtons[i]:addEventListener("touch", loadLevel)
+        levelButtons[i]:addEventListener("touch", startLevel)
     end
     
 end
@@ -103,7 +104,8 @@ function init(event)
     mode = event.target.id
     if mode == newGame then
         mainMenuGroup:removeSelf()
-        timer.performWithDelay(800, inGame, 1)
+        selectLevel = 1
+        inGame()
     elseif mode == levelSelect then
         --local levelSelectAnimation = transition.to(mainMenuGroup, {alpha = 0, xScale = 1, yScale = 1, time = 400})
         levelSelectMenu()
@@ -123,6 +125,14 @@ function toggleSound(event)
             soundButton:prepare("on")
             soundButton:play()
         end
+    end
+end
+
+function startLevel(event)
+    if event.phase == "began" then
+        levelSelectGroup:removeSelf()
+        selectedLevel = event.target.id
+        inGame()
     end
 end
 
