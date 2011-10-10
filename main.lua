@@ -20,13 +20,22 @@ else
     MAX_EQ_POWER = 130
 end
 
+GROUND_HEIGHT = 90
 
+--WORLD_WIDTH = 1000
+local GRAVITY = 0
+temp, GRAVITY = physics.getGravity()
+WIDTH_MOD = 200
+WORLD_WIDTH = 2000
+WORLD_HEIGHT = display.contentHeight
+MAP_UNIT = 20
 
 
 local newGame = 1
 local levelSelect = 2
 local soundState = 1
 audio.setVolume(0.0)
+local selectedLevel = 1
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
@@ -82,30 +91,114 @@ function levelSelectMenu()
         levelButtons[i] = display.newImage(("level" .. i .. "Button.png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
         levelButtons[i].id = i
         levelSelectGroup:insert(levelButtons[i])
-        levelButtons[i]:addEventListener("touch", loadLevel)
+        levelButtons[i]:addEventListener("touch", startLevel)
     end
     
 end
 
 function inGameMenu()
     inGameMenuGroup = display.newGroup()
+    mainMenu()
 end
 
 function inGame()
-    inGameGroup = display.newGroup
+    inGameGroup = display.newGroup()
+    
+    local shakable = {}
+    local shrapnel = {}
+    local buildings = {}
+    
+    local background = display.newImage("DayBkgrd.png", 0, display.contentHeight - 500)
+    background.x = display.contentCenterX
+    inGameGroup:insert(background)
     
     
+    -- Load level from file
+    function loadLevel()
+        local path = system.pathForFile("level" .. selectedLevel .. ".txt", system.ResourceDirectory)
+        
+        local fh, reason = io.open(path, "r")
+        
+        if fh then
+            contents = fh:read("*a")
+        else
+            print("reason open failed " .. reason)
+            return
+        end
+        
+        buildingSets = {}
+        shardSheets = {}
+        
+        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 2)
+
+        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+
+        buildingSets[1] = bldSet
+        shardSheets[1] = shrdSheet
+        
+        local i = 1
+        while i <= (WORLD_WIDTH / MAP_UNIT) do
+            local letter = string.sub(contents, i, i)
+            if letter ~= "g" then
+                local lencheck = 1
+                if letter == "1" then
+                    lencheck = 10
+                end
+                local j = i
+                while string.sub(contents, j, j) == letter do
+                    j = j + 1
+                end
+                if j - i == lencheck then
+                    local fucklua = tonumber(letter)
+                    local bld = Building:create((i + (lencheck / 2)) * MAP_UNIT - ((WORLD_WIDTH / 2) - (display.contentWidth / 2)),
+                                                WORLD_HEIGHT - GROUND_HEIGHT,
+                                                fucklua,
+                                                1,
+                                                buildingSets[fucklua],
+                                                shardSheets[fucklua])
+                    table.insert(buildings, bld)
+                    table.insert(shakable, bld)
+                    inGameGroup:insert(bld)       
+                    i = j - 1
+                end
+            end
+            i = i + 1
+        end
+        
+        io.close(fh)
+    end
     
+    function worldTouch(event)
+        for i=1, inGameGroup.numChildren do
+            if event.phase == "began" then
+                inGameGroup[i].x0 = event.x - inGameGroup[i].x
+                inGameGroup[i].y0 = event.y - inGameGroup[i].y
+            end
+            if (event.x - background.x0) - (WORLD_WIDTH/2) <= 0 and 
+               (event.x - background.x0) + (WORLD_WIDTH/2) >= display.contentWidth then
+                inGameGroup[i].x = event.x - inGameGroup[i].x0
+            end
+        end 
+    end
+    
+    inGameGroup:addEventListener("touch", worldTouch)
+    
+    loadLevel()
 end
 
 function init(event)
     mode = event.target.id
-    if mode == newGame then
-        mainMenuGroup:removeSelf()
-        timer.performWithDelay(800, inGame, 1)
-    elseif mode == levelSelect then
-        --local levelSelectAnimation = transition.to(mainMenuGroup, {alpha = 0, xScale = 1, yScale = 1, time = 400})
-        levelSelectMenu()
+    if event.phase == "ended" then
+        if mode == newGame then
+            mainMenuGroup:removeSelf()
+            selectedLevel = 1
+            inGame()
+        elseif mode == levelSelect then
+            --local levelSelectAnimation = transition.to(mainMenuGroup, {alpha = 0, xScale = 1, yScale = 1, time = 400})
+            mainMenuGroup:removeSelf()
+            levelSelectMenu()
+        end
     end
 end
 
@@ -125,9 +218,18 @@ function toggleSound(event)
     end
 end
 
-function loadLevel(event)
+function startLevel(event)
+    if event.phase == "ended" then
+        selectedLevel = event.target.id
+        levelSelectGroup:removeSelf()
+        inGame()
+    end
+end
+
+function returnToMain(event)
     if event.phase == "began" then
-        print("Loading level " .. event.target.id)
+        selectedLevel = 1
+        mainMenu()
     end
 end
 
