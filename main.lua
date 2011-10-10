@@ -108,6 +108,12 @@ function inGame()
     local shrapnel = {}
     local buildings = {}
     
+    local epicenterSheet = sprite.newSpriteSheet("crosshair.png", 16, 16)
+    local epicenterSet = sprite.newSpriteSet(epicenterSheet, 1, 1)
+    local epicenter = sprite.newSprite(epicenterSet)
+    epicenter.setVisible = false
+    epicenter.active = false
+    
     local background = display.newImage("DayBkgrd.png", 0, display.contentHeight - 500)
     background.x = display.contentCenterX
     inGameGroup:insert(background)
@@ -179,7 +185,14 @@ function inGame()
                (event.x - background.x0) + (WORLD_WIDTH/2) >= display.contentWidth then
                 inGameGroup[i].x = event.x - inGameGroup[i].x0
             end
-        end 
+        end
+        
+        if event.phase == "began" then
+            if event.y > WORLD_HEIGHT - GROUND_HEIGHT + 10 then
+                epicenter.x = event.x
+                epicenter.y = event.y
+            end
+        end
     end
     
     inGameGroup:addEventListener("touch", worldTouch)
