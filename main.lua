@@ -45,11 +45,11 @@ function mainMenu()
     mainMenuGroup:insert(mainMenuBG)
 
     -- Add buttons
-    local newGameButton = display.newImage("newGameButton.png", (display.contentWidth / 2) - 48, (display.contentHeight / 2) + 60)
+    local newGameButton = display.newImage("newGameButton.png", display.contentCenterX - 48, display.contentCenterY + 60)
     newGameButton.id = newGame
     mainMenuGroup:insert(newGameButton)
     
-    local levelSelectButton = display.newImage("levelSelectButton.png", (display.contentWidth / 2) - 48, (display.contentHeight / 2) + 120)
+    local levelSelectButton = display.newImage("levelSelectButton.png", display.contentCenterX - 48, display.contentCenterY + 120)
     levelSelectButton.id = levelSelect
     mainMenuGroup:insert(levelSelectButton)
     
