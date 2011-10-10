@@ -201,7 +201,6 @@ end
 
 local function addShards()
     for i, i_shard in pairs(shard_list) do
-    
         myText.text = "BROKEN! " .. i
         world:insert(i_shard)
         --i_shard.isVisible = false
