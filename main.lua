@@ -27,7 +27,7 @@ temp, GRAVITY = physics.getGravity()
 WIDTH_MOD = 200
 WORLD_WIDTH = 2000
 WORLD_HEIGHT = display.contentHeight * 3
-MAP_UNIT = 20
+MAP_UNIT = 10
 
 
 local newGame = 1
@@ -35,7 +35,7 @@ local levelSelect = 2
 local soundState = 1
 audio.setVolume(0.0)
 local selectedLevel = 1
-local completedLevels = 0
+local completedLevels = 9
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
@@ -230,8 +230,24 @@ function inGame()
             local letter = string.sub(contents, i, i)
             if letter ~= "g" then
                 local lencheck = 1
-                if letter == "9" then
+                if letter == "1" then
                     lencheck = 10
+                elseif letter == "2" then
+                    lencheck = 0
+                elseif letter == "3" then
+                    lencheck = 16
+                elseif letter == "4" then
+                    lencheck = 0
+                elseif letter == "5" then
+                    lencheck = 0
+                elseif letter == "6" then
+                    lencheck = 19
+                elseif letter == "7" then
+                    lencheck = 15
+                elseif letter == "8" then
+                    lencheck = 10
+                elseif letter == "9" then
+                    lencheck = 20
                 end
                 local j = i
                 while string.sub(contents, j, j) == letter do
@@ -251,8 +267,13 @@ function inGame()
                     if #bld.poly == 1 then
                         physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]})
                     elseif #bld.poly == 2 then
-                        physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
-                                             {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[2]})
+                        if #bld.poly[2] == 1 then
+                            physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
+                                                 {density = 3.0, friction = 0.5, bounce = 0.3, radius = bld.poly[2]})
+                        else
+                            physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
+                                                 {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[2]})
+                        end
                     end
                     buildingJoint = physics.newJoint("weld", ground, bld, bld.x, bld.y + bld.height / 2)
                     
