@@ -152,6 +152,71 @@ function inGame()
         buildingSets = {}
         shardSheets = {}
         
+        -- 1
+        local bldSheet = sprite.newSpriteSheet("Office1.png", 100, 300)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("OfficeShards.png", 100,300)
+
+        buildingSets[1] = bldSet
+        shardSheets[1] = shrdSheet
+        -- 2
+        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+
+        buildingSets[2] = bldSet
+        shardSheets[2] = shrdSheet
+        -- 3
+        local bldSheet = sprite.newSpriteSheet("EnemyHQ.png", 160, 360)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("EnemyHQFragments.png", 160,360)
+
+        buildingSets[3] = bldSet
+        shardSheets[3] = shrdSheet
+        -- 4
+        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+
+        buildingSets[4] = bldSet
+        shardSheets[4] = shrdSheet
+        -- 5
+        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+
+        buildingSets[5] = bldSet
+        shardSheets[5] = shrdSheet
+        -- 6
+        local bldSheet = sprite.newSpriteSheet("Factory.png", 190, 175)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("FactoryShards.png", 190,175)
+
+        buildingSets[6] = bldSet
+        shardSheets[6] = shrdSheet
+        -- 7
+        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+
+        buildingSets[7] = bldSet
+        shardSheets[7] = shrdSheet
+        -- 8
+        local bldSheet = sprite.newSpriteSheet("ApartmentBuilding.png", 100, 260)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("ApartmentShards.png", 100,260)
+
+        buildingSets[8] = bldSet
+        shardSheets[8] = shrdSheet
+        -- 9
         local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
         local bldSet = sprite.newSpriteSet(bldSheet, 1, 2)
 
@@ -182,8 +247,13 @@ function inGame()
                                                 shardSheets[fucklua])
                     table.insert(buildings, bld)
                     table.insert(shakable, bld)
-                    inGameGroup:insert(bld) 
-                    physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly})
+                    inGameGroup:insert(bld)
+                    if #bld.poly == 1 then
+                        physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]})
+                    elseif #bld.poly == 2 then
+                        physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
+                                             {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[2]})
+                    end
                     buildingJoint = physics.newJoint("weld", ground, bld, bld.x, bld.y + bld.height / 2)
                     
                     bld.collision = onCollide
