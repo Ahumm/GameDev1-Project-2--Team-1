@@ -19,7 +19,7 @@ function Building:create(x, y, btype, status, bldingSet, shardSheet)
     elseif btype == 2 then
         bldng.poly = {{},{}}
     elseif btype == 3 then
-        bldng.poly = {{-25,-141,25,-141,25,179,-25,179},{-80,-179,80,-179,80,-142,-80,-142}}
+        bldng.poly = {{-25,-141,25,-141,25,179,-25,179},{-80,-179,80,-179,80,-141,-80,-141}}
     elseif btype == 4 then
         bldng.poly = {{}}
     elseif btype == 5 then
@@ -27,7 +27,7 @@ function Building:create(x, y, btype, status, bldingSet, shardSheet)
     elseif btype == 6 then
         bldng.poly = {{}}
     elseif btype == 7 then
-        bldng.poly = {{}}
+        bldng.poly = {{-73,-32,71,-32,71,11,-73,11}}
     elseif btype == 8 then
         bldng.poly = {{-50,-130,50,-130,50,130,-50,130}}
     elseif btype == 9 then

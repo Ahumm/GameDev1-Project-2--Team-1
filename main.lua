@@ -8,7 +8,7 @@ require "Building"
 
 --start the physical simulation
 physics.start()
---physics.setDrawMode("hybrid")
+physics.setDrawMode("hybrid")
 --background color
 local isSimulator = "simulator" == system.getInfo("environment")
 
