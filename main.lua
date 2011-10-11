@@ -24,6 +24,7 @@ WIDTH_MOD = 200
 WORLD_WIDTH = 6000
 WORLD_HEIGHT = display.contentHeight * 3
 MAP_UNIT = 10
+BOUNCE_VALUE = .1
 
 
 local newGame = 1
@@ -33,6 +34,7 @@ local gameState = 0 -- 0 = main menu; 1 = level select; 2 = in game
 audio.setVolume(0.0)
 local selectedLevel = 1
 local completedLevels = 9
+local building_keys = {}
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
@@ -145,7 +147,7 @@ function inGame()
     
     local font = nil
     for i, font_ in pairs(native.getFontNames()) do
-        if string.sub(font_, 1, 3) == "Qua" then
+        if string.sub(font_, 1, 1) == "c" then
            print(font_)
            font = font_
         end
@@ -232,60 +234,60 @@ function inGame()
             if #i_shard.polys == 1 then
                 if #i_shard.polys[1] == 1 then
                     physics.addBody(i_shard, 
-                                    {density=8.0,friction=0.4, bounce=0.4, radius = i_shard.polys[1][1]})
+                                    {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, radius = i_shard.polys[1][1]})
                 else
                     physics.addBody(i_shard, 
-                                    {density=8.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]})
+                                    {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[1]})
                 end
             elseif #i_shard.polys == 2 then
                 physics.addBody(i_shard, 
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[2]})
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[1]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[2]})
             elseif #i_shard.polys == 3 then
                 physics.addBody(i_shard, 
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[2]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[3]})
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[1]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[2]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[3]})
             elseif #i_shard.polys == 4 then
                 physics.addBody(i_shard, 
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[2]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[3]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[4]})
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[1]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[2]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[3]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[4]})
             elseif #i_shard.polys == 5 then
                 physics.addBody(i_shard, 
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[2]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[3]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[4]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[5]})
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[1]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[2]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[3]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[4]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[5]})
             elseif #i_shard.polys == 6 then
                 physics.addBody(i_shard, 
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[2]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[3]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[4]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[5]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[6]})
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[1]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[2]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[3]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[4]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[5]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[6]})
             elseif #i_shard.polys == 7 then
                 physics.addBody(i_shard, 
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[2]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[3]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[4]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[5]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[6]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[7]})
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[1]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[2]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[3]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[4]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[5]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[6]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[7]})
             elseif #i_shard.polys == 8 then
                 physics.addBody(i_shard, 
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[2]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[3]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[4]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[5]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[6]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[7]},
-                                {density=8.0,friction=0.4, bounce=0.2, shape = i_shard.polys[8]})
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[1]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[2]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[3]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[4]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[5]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[6]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[7]},
+                                {density=8.0,friction=0.4, bounce=BOUNCE_VALUE, shape = i_shard.polys[8]})
             end
             if i == 1 then
                 physics.newJoint("weld", ground, i_shard, i_shard.x, i_shard.y + i_shard.height / 2)
@@ -300,6 +302,7 @@ function inGame()
     
     local function damage_building(b, damage, vx, vy, ox, oy)
         if b then
+            local key_id = b.id
             b.takeDamage(damage)
             local isDead = b.isDead(vx/6, vy/6, ox, oy)
             if isDead then
@@ -316,7 +319,8 @@ function inGame()
                         break
                     end
                 end
-                if b.x then
+                if not building_keys[key_id] then
+                    building_keys[key_id] = true
                     b:removeSelf()
                     --b = nil
                     shard_list = isDead
@@ -333,8 +337,10 @@ function inGame()
     
     local function endQuake()
         eq = false
+        local FORCE_MULT = 27500
+        local FORCE_MIN = 2500
         for i, bld in pairs(buildings) do
-            force = 20000 * math.min(1, eq_power / MAX_EQ_POWER) + 5000
+            force = FORCE_MULT * math.min(1, eq_power / MAX_EQ_POWER) + FORCE_MIN
             angle = math.atan((math.abs(epicenter.x - bld.x))/(math.abs(epicenter.y - bld.y)))
             distance = math.sqrt(math.pow(epicenter.x - bld.x,2) + math.pow(epicenter.y - bld.y,2)) / 30
             
@@ -346,7 +352,7 @@ function inGame()
         end
         for i, penguin in pairs(shakable) do
             penguin:setLinearVelocity(0, 0)
-            force = 55000 * math.min(1, eq_power / MAX_EQ_POWER) + 10000
+            force = FORCE_MULT * math.min(1, eq_power / MAX_EQ_POWER) + FORCE_MIN
             angle = math.atan((math.abs(epicenter.x - penguin.x))/(math.abs(epicenter.y - penguin.y)))
             distance = math.sqrt(math.pow(epicenter.x - penguin.x,2) + math.pow(epicenter.y - penguin.y,2)) / 30
             if epicenter.x >= penguin.x then
@@ -367,8 +373,8 @@ function inGame()
                 end        
             end
             
-            x = math.cos(angle) * (force/math.pow(distance,1.5))
-            y = math.sin(angle) * -(force/math.pow(distance,1.5))
+            x = math.cos(angle) * (force/math.pow(distance,1.3))
+            y = math.sin(angle) * -(force/math.pow(distance,1.3))
             
             penguin:applyLinearImpulse(x, y, penguin.x, penguin.y)
         end
@@ -608,6 +614,8 @@ function inGame()
                     
                     bld.collision = onCollide
                     bld:addEventListener("collision", bld)
+                    bld.id = i
+                    building_keys[bld.id] = false
                     i = j - 1
                 end
             end
