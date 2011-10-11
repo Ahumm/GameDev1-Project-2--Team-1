@@ -299,7 +299,7 @@ function inGame()
     end
     
     local function damage_building(b, damage, vx, vy, ox, oy)
-        if b then
+        if b and not b.dead then
             b.takeDamage(damage)
             local isDead = b.isDead(vx/6, vy/6, ox, oy)
             if isDead then
@@ -318,7 +318,6 @@ function inGame()
                 end
                 if b.x then
                     b:removeSelf()
-                    --b = nil
                     shard_list = isDead
                     addShards()
                 else
