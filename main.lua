@@ -161,10 +161,10 @@ function inGame()
         buildingSets[1] = bldSet
         shardSheets[1] = shrdSheet
         -- 2
-        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSheet = sprite.newSpriteSheet("SmallHouse.png", 120, 150)
         local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
 
-        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+        local shrdSheet = sprite.newSpriteSheet("SmallHouseRemains.png", 120,150)
 
         buildingSets[2] = bldSet
         shardSheets[2] = shrdSheet
@@ -196,15 +196,15 @@ function inGame()
         local bldSheet = sprite.newSpriteSheet("Factory.png", 190, 175)
         local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
 
-        local shrdSheet = sprite.newSpriteSheet("FactoryShards.png", 190,175)
+        local shrdSheet = sprite.newSpriteSheet("FactoryShards.png", 190, 175)
 
         buildingSets[6] = bldSet
         shardSheets[6] = shrdSheet
         -- 7
-        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSheet = sprite.newSpriteSheet("FuelTank.png", 150, 70)
         local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
 
-        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+        local shrdSheet = sprite.newSpriteSheet("FuelTankShards.png", 150,70)
 
         buildingSets[7] = bldSet
         shardSheets[7] = shrdSheet
@@ -233,7 +233,7 @@ function inGame()
                 if letter == "1" then
                     lencheck = 10
                 elseif letter == "2" then
-                    lencheck = 0
+                    lencheck = 12
                 elseif letter == "3" then
                     lencheck = 16
                 elseif letter == "4" then
@@ -274,6 +274,13 @@ function inGame()
                             physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
                                                  {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[2]})
                         end
+                    elseif #bld.poly == 5 then
+                        physics.addBody(bld, 
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[2]},
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[3]},
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[4]},
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[5]})
                     end
                     buildingJoint = physics.newJoint("weld", ground, bld, bld.x, bld.y + bld.height / 2)
                     
