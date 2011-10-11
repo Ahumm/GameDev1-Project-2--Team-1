@@ -25,7 +25,7 @@ GROUND_HEIGHT = 90
 local GRAVITY = 0
 temp, GRAVITY = physics.getGravity()
 WIDTH_MOD = 200
-WORLD_WIDTH = 2000
+WORLD_WIDTH = 6000
 WORLD_HEIGHT = display.contentHeight * 3
 MAP_UNIT = 10
 
@@ -118,9 +118,15 @@ function inGame()
     local shard_list = nil
     local shake_dir = 1
     
-    local background = display.newImage("DayBkgrd.png", 0, display.contentHeight - 500)
+    local background = display.newImage("DayBkgrd2.png", 0, display.contentHeight - 500)
     background.x = display.contentCenterX
     inGameGroup:insert(background)
+    
+    local background2 = display.newImage("DayBkgrd2.png", background.x - (1.5 *background.width), display.contentHeight - 500)
+    inGameGroup:insert(background2)
+    
+    local background3 = display.newImage("DayBkgrd2.png", background.x + (0.5 * background.width), display.contentHeight - 500)
+    inGameGroup:insert(background3)
     
     local epicenterSheet = sprite.newSpriteSheet("crosshair.png", 16, 16)
     local epicenterSet = sprite.newSpriteSet(epicenterSheet, 1, 1)
@@ -152,11 +158,16 @@ function inGame()
         local fh, reason = io.open(path, "r")
         
         if fh then
-            contents = fh:read("*a")
+            contents = fh:read("*l")
         else
             print("reason open failed " .. reason)
             return
         end
+        
+        --Get the world width
+        WORLD_WIDTH = tonumber(contents)
+        
+        contents = fh:read("*l")
         
         buildingSets = {}
         shardSheets = {}
