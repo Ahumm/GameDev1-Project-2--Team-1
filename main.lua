@@ -134,23 +134,6 @@ function inGame()
     epicenter.isVisible = false
     inGameGroup:insert(epicenter)
     
-    local top_edge = display.newRect(inGameGroup, 0,display.contentHeight - WORLD_HEIGHT, WORLD_WIDTH, 10)
-    top_edge.x = display.contentCenterX
-    physics.addBody(top_edge, "static", {bounce = 0.7})
-    top_edge.isVisible = false
-    local left_edge = display.newRect(inGameGroup, 0,0, 10, WORLD_HEIGHT)
-    left_edge.x = left_edge.x - ((WORLD_WIDTH / 2) - (display.contentWidth / 2))
-    physics.addBody(left_edge, "static", {bounce = 0.7})
-    left_edge.isVisible = false
-    local right_edge = display.newRect(inGameGroup, WORLD_WIDTH - 10,0, 10, WORLD_HEIGHT)
-    right_edge.x = right_edge.x - ((WORLD_WIDTH / 2) - (display.contentWidth / 2))
-    physics.addBody(right_edge, "static", {bounce = 0.7})
-    right_edge.isVisible = false
-    local ground = display.newRect(inGameGroup, 0, display.contentHeight - GROUND_HEIGHT, WORLD_WIDTH, GROUND_HEIGHT)
-    ground.x = display.contentCenterX
-    physics.addBody(ground, "static", {friction = 2, bounce = 0.4})
-    ground.isVisible = false
-    
     -- Load level from file
     local function loadLevel()
         local path = system.pathForFile("level" .. selectedLevel .. ".txt", system.ResourceDirectory)
@@ -166,6 +149,24 @@ function inGame()
         
         --Get the world width
         WORLD_WIDTH = tonumber(contents)
+        
+        -- Define borders
+        top_edge = display.newRect(inGameGroup, 0,display.contentHeight - WORLD_HEIGHT, WORLD_WIDTH, 10)
+        top_edge.x = display.contentCenterX
+        physics.addBody(top_edge, "static", {bounce = 0.7})
+        top_edge.isVisible = false
+        left_edge = display.newRect(inGameGroup, 0,0, 10, WORLD_HEIGHT)
+        left_edge.x = left_edge.x - ((WORLD_WIDTH / 2) - (display.contentWidth / 2))
+        physics.addBody(left_edge, "static", {bounce = 0.7})
+        left_edge.isVisible = false
+        right_edge = display.newRect(inGameGroup, WORLD_WIDTH - 10,0, 10, WORLD_HEIGHT)
+        right_edge.x = right_edge.x - ((WORLD_WIDTH / 2) - (display.contentWidth / 2))
+        physics.addBody(right_edge, "static", {bounce = 0.7})
+        right_edge.isVisible = false
+        ground = display.newRect(inGameGroup, 0, display.contentHeight - GROUND_HEIGHT, WORLD_WIDTH, GROUND_HEIGHT)
+        ground.x = display.contentCenterX
+        physics.addBody(ground, "static", {friction = 2, bounce = 0.4})
+        ground.isVisible = false
         
         contents = fh:read("*l")
         
