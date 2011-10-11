@@ -41,14 +41,19 @@ function mainMenu()
     mainMenuGroup = display.newGroup()
     
     -- Load Background Image
-    local mainMenuBG = display.newImage("mainMenuBG.png")
+    --local mainMenuBG = display.newImage("mainMenuBG.png")
+    local mainMenuBG = display.newImage("TitleMenu.png")
+    mainMenuBG.x = display.contentCenterX
+    mainMenuBG.y = display.contentCenterY
     mainMenuGroup:insert(mainMenuBG)
 
     -- Add buttons
-    local newGameButton = display.newImage("newGameButton.png", display.contentCenterX - 48, display.contentCenterY + 60)
+    --local newGameButton = display.newImage("newGameButton.png", display.contentCenterX - 48, display.contentCenterY + 60)
+    local newGameButton = display.newImage("NewGame.png", display.contentCenterX - 48, display.contentCenterY + 60)
     newGameButton.id = newGame
     mainMenuGroup:insert(newGameButton)
     
+    --local levelSelectButton = display.newImage("levelSelectButton.png", display.contentCenterX - 48, display.contentCenterY + 120)
     local levelSelectButton = display.newImage("levelSelectButton.png", display.contentCenterX - 48, display.contentCenterY + 120)
     levelSelectButton.id = levelSelect
     mainMenuGroup:insert(levelSelectButton)
@@ -81,6 +86,8 @@ function levelSelectMenu()
     local levelSelectBG = display.newImage("levelSelectBG.png")
     levelSelectGroup:insert(levelSelectBG)
     
+    local backButton = display.newImage("BackButton.png", display.contentWidth - 100, display.contentHeight - 50)
+    levelSelectGroup:insert(backButton)
     
     -- Add level selection buttons
     local levelButtons = {}
@@ -93,6 +100,8 @@ function levelSelectMenu()
         levelSelectGroup:insert(levelButtons[i])
         levelButtons[i]:addEventListener("touch", startLevel)
     end
+    
+    backButton:addEventListener("touch", returnToMain)
     
 end
 
@@ -573,6 +582,7 @@ end
 
 function returnToMain(event)
     if event.phase == "began" then
+        levelSelectGroup:removeSelf()
         selectedLevel = 1
         mainMenu()
     end
