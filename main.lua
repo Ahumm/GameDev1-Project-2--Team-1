@@ -157,15 +157,15 @@ function inGame()
 
         local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
 
-        buildingSets[1] = bldSet
-        shardSheets[1] = shrdSheet
+        buildingSets[9] = bldSet
+        shardSheets[9] = shrdSheet
         
         local i = 1
         while i <= (WORLD_WIDTH / MAP_UNIT) do
             local letter = string.sub(contents, i, i)
             if letter ~= "g" then
                 local lencheck = 1
-                if letter == "1" then
+                if letter == "9" then
                     lencheck = 10
                 end
                 local j = i
