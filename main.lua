@@ -21,9 +21,9 @@ GROUND_HEIGHT = 90
 local GRAVITY = 0
 temp, GRAVITY = physics.getGravity()
 WIDTH_MOD = 200
-WORLD_WIDTH = 2000
+WORLD_WIDTH = 6000
 WORLD_HEIGHT = display.contentHeight * 3
-MAP_UNIT = 20
+MAP_UNIT = 10
 
 
 local newGame = 1
@@ -32,21 +32,26 @@ local soundState = 1
 local gameState = 0 -- 0 = main menu; 1 = level select; 2 = in game
 audio.setVolume(0.0)
 local selectedLevel = 1
-local completedLevels = 0
+local completedLevels = 2
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
     gameState = 0
     
     -- Load Background Image
-    local mainMenuBG = display.newImage("mainMenuBG.png")
+    --local mainMenuBG = display.newImage("mainMenuBG.png")
+    local mainMenuBG = display.newImage("TitleMenu.png")
+    mainMenuBG.x = display.contentCenterX
+    mainMenuBG.y = display.contentCenterY
     mainMenuGroup:insert(mainMenuBG)
 
     -- Add buttons
-    local newGameButton = display.newImage("newGameButton.png", display.contentCenterX - 48, display.contentCenterY + 60)
+    --local newGameButton = display.newImage("newGameButton.png", display.contentCenterX - 48, display.contentCenterY + 60)
+    local newGameButton = display.newImage("NewGame.png", display.contentCenterX - 48, display.contentCenterY + 60)
     newGameButton.id = newGame
     mainMenuGroup:insert(newGameButton)
     
+    --local levelSelectButton = display.newImage("levelSelectButton.png", display.contentCenterX - 48, display.contentCenterY + 120)
     local levelSelectButton = display.newImage("levelSelectButton.png", display.contentCenterX - 48, display.contentCenterY + 120)
     levelSelectButton.id = levelSelect
     mainMenuGroup:insert(levelSelectButton)
@@ -80,6 +85,8 @@ function levelSelectMenu()
     local levelSelectBG = display.newImage("levelSelectBG.png")
     levelSelectGroup:insert(levelSelectBG)
     
+    local backButton = display.newImage("BackButton.png", display.contentWidth - 100, display.contentHeight - 50)
+    levelSelectGroup:insert(backButton)
     
     -- Add level selection buttons
     local levelButtons = {}
@@ -92,7 +99,7 @@ function levelSelectMenu()
         grayOuts[i] = display.newImage(("leveloverlay.png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
         levelButtons[i].id = i
         grayOuts[i].id = i
-        if selectedLevel >= i then
+        if completedLevels + 1 >= i then
             grayOuts[i].alpha = 0
         else
             grayOuts[i].alpha = 0.8
@@ -101,6 +108,8 @@ function levelSelectMenu()
         levelSelectGroup:insert(levelButtons[i])
         levelButtons[i]:addEventListener("touch", startLevel)
     end
+    
+    backButton:addEventListener("touch", returnToMain)
     
 end
 
@@ -118,9 +127,15 @@ function inGame()
     local shard_list = nil
     local shake_dir = 1
     
-    local background = display.newImage("DayBkgrd.png", 0, display.contentHeight - 500)
+    local background = display.newImage("DayBkgrd2.png", 0, display.contentHeight - 500)
     background.x = display.contentCenterX
     inGameGroup:insert(background)
+    
+    local background2 = display.newImage("DayBkgrd2.png", background.x - (1.5 *background.width), display.contentHeight - 500)
+    inGameGroup:insert(background2)
+    
+    local background3 = display.newImage("DayBkgrd2.png", background.x + (0.5 * background.width), display.contentHeight - 500)
+    inGameGroup:insert(background3)
     
     local epicenterSheet = sprite.newSpriteSheet("crosshair.png", 16, 16)
     local epicenterSet = sprite.newSpriteSet(epicenterSheet, 1, 1)
@@ -128,25 +143,6 @@ function inGame()
     epicenter.isVisible = false
     inGameGroup:insert(epicenter)
     
-    local top_edge = display.newRect(inGameGroup, 0, display.contentHeight - WORLD_HEIGHT, WORLD_WIDTH, 10)
-    top_edge.x = display.contentCenterX
-    physics.addBody(top_edge, "static", {bounce = 0.7})
-    top_edge.isVisible = false
-    
-    local left_edge = display.newRect(inGameGroup, 0,display.contentHeight - WORLD_HEIGHT, 10, WORLD_HEIGHT)
-    left_edge.x = left_edge.x - ((WORLD_WIDTH / 2) - (display.contentWidth / 2))
-    physics.addBody(left_edge, "static", {bounce = 0.7})
-    left_edge.isVisible = false
-    
-    local right_edge = display.newRect(inGameGroup, WORLD_WIDTH - 10,display.contentHeight - WORLD_HEIGHT, 10, WORLD_HEIGHT)
-    right_edge.x = right_edge.x - ((WORLD_WIDTH / 2) - (display.contentWidth / 2))
-    physics.addBody(right_edge, "static", {bounce = 0.7})
-    right_edge.isVisible = false
-
-    local ground = display.newRect(inGameGroup, 0, display.contentHeight - GROUND_HEIGHT, WORLD_WIDTH, GROUND_HEIGHT)
-    ground.x = display.contentCenterX
-    physics.addBody(ground, "static", {friction = 2, bounce = 0.3})
-    ground.isVisible = false
     local font = nil
     for i, font_ in pairs(native.getFontNames()) do
         if string.sub(font_, 1, 3) == "Qua" then
@@ -234,8 +230,13 @@ function inGame()
             table.insert(shakable, i_shard)
             table.insert(shrapnel, i_shard)
             if #i_shard.polys == 1 then
-                physics.addBody(i_shard, 
-                                {density=3.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]})
+                if #i_shard.polys[1] == 1 then
+                    physics.addBody(i_shard, 
+                                    {density=3.0,friction=0.4, bounce=0.4, radius = i_shard.polys[1][1]})
+                else
+                    physics.addBody(i_shard, 
+                                    {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]})
+                end
             elseif #i_shard.polys == 2 then
                 physics.addBody(i_shard, 
                                 {density=3.0,friction=0.4, bounce=0.2, shape = i_shard.polys[1]},
@@ -429,21 +430,114 @@ function inGame()
         end
     end
     
+    
+    -- Load level from file
     local function loadLevel()
         local path = system.pathForFile("level" .. selectedLevel .. ".txt", system.ResourceDirectory)
         
         local fh, reason = io.open(path, "r")
         
         if fh then
-            contents = fh:read("*a")
+            contents = fh:read("*l")
         else
             print("reason open failed " .. reason)
             return
         end
         
+        --Get the world width
+        WORLD_WIDTH = tonumber(contents)
+        
+        -- Define borders
+        top_edge = display.newRect(inGameGroup, 0, display.contentHeight - WORLD_HEIGHT, WORLD_WIDTH, 10)
+        top_edge.x = display.contentCenterX
+        physics.addBody(top_edge, "static", {bounce = 0.7})
+        top_edge.isVisible = false
+        
+        left_edge = display.newRect(inGameGroup, 0,display.contentHeight - WORLD_HEIGHT, 10, WORLD_HEIGHT)
+        left_edge.x = left_edge.x - ((WORLD_WIDTH / 2) - (display.contentWidth / 2))
+        physics.addBody(left_edge, "static", {bounce = 0.7})
+        left_edge.isVisible = false
+        
+        right_edge = display.newRect(inGameGroup, WORLD_WIDTH - 10,display.contentHeight - WORLD_HEIGHT, 10, WORLD_HEIGHT)
+        right_edge.x = right_edge.x - ((WORLD_WIDTH / 2) - (display.contentWidth / 2))
+        physics.addBody(right_edge, "static", {bounce = 0.7})
+        right_edge.isVisible = false
+
+        ground = display.newRect(inGameGroup, 0, display.contentHeight - GROUND_HEIGHT, WORLD_WIDTH, GROUND_HEIGHT)
+        ground.x = display.contentCenterX
+        physics.addBody(ground, "static", {friction = 2, bounce = 0.3})
+        ground.isVisible = false
+        
+        contents = fh:read("*l")
+        
         buildingSets = {}
         shardSheets = {}
         
+        -- 1
+        local bldSheet = sprite.newSpriteSheet("Office1.png", 100, 300)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("OfficeShards.png", 100,300)
+
+        buildingSets[1] = bldSet
+        shardSheets[1] = shrdSheet
+        -- 2
+        local bldSheet = sprite.newSpriteSheet("SmallHouse.png", 120, 150)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("SmallHouseRemains.png", 120,150)
+
+        buildingSets[2] = bldSet
+        shardSheets[2] = shrdSheet
+        -- 3
+        local bldSheet = sprite.newSpriteSheet("EnemyHQ.png", 160, 360)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("EnemyHQFragments.png", 160,360)
+
+        buildingSets[3] = bldSet
+        shardSheets[3] = shrdSheet
+        -- 4
+        local bldSheet = sprite.newSpriteSheet("GasStation.png", 280,110)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("GasStationRemains.png", 280,110)
+
+        buildingSets[4] = bldSet
+        shardSheets[4] = shrdSheet
+        -- 5
+        local bldSheet = sprite.newSpriteSheet("DonutShop.png", 150,260)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("DonutShopShards.png", 150,260)
+
+        buildingSets[5] = bldSet
+        shardSheets[5] = shrdSheet
+        -- 6
+        local bldSheet = sprite.newSpriteSheet("Factory.png", 190, 175)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("FactoryShards.png", 190, 175)
+
+        buildingSets[6] = bldSet
+        shardSheets[6] = shrdSheet
+        -- 7
+        local bldSheet = sprite.newSpriteSheet("FuelTank.png", 150, 70)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("FuelTankShards.png", 150,70)
+
+        buildingSets[7] = bldSet
+        shardSheets[7] = shrdSheet
+        -- 8
+        local bldSheet = sprite.newSpriteSheet("ApartmentBuilding.png", 100, 260)
+        local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
+
+        local shrdSheet = sprite.newSpriteSheet("ApartmentShards.png", 100,260)
+
+        buildingSets[8] = bldSet
+        shardSheets[8] = shrdSheet
+        -- 9
         local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
         local bldSet = sprite.newSpriteSet(bldSheet, 1, 2)
 
@@ -457,8 +551,24 @@ function inGame()
             local letter = string.sub(contents, i, i)
             if letter ~= "g" then
                 local lencheck = 1
-                if letter == "9" then
+                if letter == "1" then
                     lencheck = 10
+                elseif letter == "2" then
+                    lencheck = 12
+                elseif letter == "3" then
+                    lencheck = 16
+                elseif letter == "4" then
+                    lencheck = 28
+                elseif letter == "5" then
+                    lencheck = 15
+                elseif letter == "6" then
+                    lencheck = 19
+                elseif letter == "7" then
+                    lencheck = 15
+                elseif letter == "8" then
+                    lencheck = 10
+                elseif letter == "9" then
+                    lencheck = 20
                 end
                 local j = i
                 while string.sub(contents, j, j) == letter do
@@ -474,8 +584,25 @@ function inGame()
                                                 shardSheets[fucklua])
                     table.insert(buildings, bld)
                     table.insert(shakable, bld)
-                    inGameGroup:insert(bld) 
-                    physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.1, shape = bld.poly})
+                    inGameGroup:insert(bld)
+                    if #bld.poly == 1 then
+                        physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]})
+                    elseif #bld.poly == 2 then
+                        if #bld.poly[2] == 1 then
+                            physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
+                                                 {density = 3.0, friction = 0.5, bounce = 0.3, radius = bld.poly[2][1]})
+                        else
+                            physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
+                                                 {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[2]})
+                        end
+                    elseif #bld.poly == 5 then
+                        physics.addBody(bld, 
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[2]},
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[3]},
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[4]},
+                                    {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[5]})
+                    end
                     buildingJoint = physics.newJoint("weld", ground, bld, bld.x, bld.y + bld.height / 2)
                     
                     bld.collision = onCollide
@@ -485,8 +612,6 @@ function inGame()
             end
             i = i + 1
         end
-        
-        io.close(fh)
     end
     
     inGameGroup:addEventListener("touch", worldTouch)
@@ -536,9 +661,12 @@ function startLevel(event)
     end
 end
 
-function returnToMainFromLevelSelect()
-    selectedLevel = 1
-    mainMenu()
+function returnToMain(event)
+    if event.phase == "began" then
+        levelSelectGroup:removeSelf()
+        selectedLevel = 1
+        mainMenu()
+    end
 end
 
 function onKeyEvent(event)
