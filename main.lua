@@ -8,12 +8,11 @@ require "Building"
 
 --start the physical simulation
 physics.start()
-physics.setDrawMode("hybrid")
+--physics.setDrawMode("hybrid")
 --background color
 local isSimulator = "simulator" == system.getInfo("environment")
 
 -- Accelerator is not supported on Simulator
---
 if isSimulator then
     MAX_EQ_POWER = 70
 else
@@ -36,6 +35,7 @@ local levelSelect = 2
 local soundState = 1
 audio.setVolume(0.0)
 local selectedLevel = 1
+local completedLevels = 0
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
@@ -94,11 +94,6 @@ function levelSelectMenu()
         levelButtons[i]:addEventListener("touch", startLevel)
     end
     
-end
-
-function inGameMenu()
-    inGameMenuGroup = display.newGroup()
-    mainMenu()
 end
 
 function inGame()
@@ -215,11 +210,14 @@ function inGame()
                 inGameGroup[i].x0 = event.x - inGameGroup[i].x
                 inGameGroup[i].y0 = event.y - inGameGroup[i].y
             end
-            if (event.x - background.x0) - (WORLD_WIDTH/2) <= 0 and 
-               (event.x - background.x0) + (WORLD_WIDTH/2) >= display.contentWidth and
-               not post_eq and 
-               not eq then
-                inGameGroup[i].x = event.x - inGameGroup[i].x0
+            if not post_eq and not eq then
+                if (event.x - background.x0) - (WORLD_WIDTH/2) > 10 then
+                    inGameGroup[i].x = background.x0 + (WORLD_WIDTH/2) - inGameGroup[i].x0 - 10
+                elseif (event.x - background.x0) + (WORLD_WIDTH/2) < display.contentWidth - 10 then
+                    inGameGroup[i].x = background.x0 - (WORLD_WIDTH/2) + display.contentWidth - inGameGroup[i].x0 + 10
+                else
+                    inGameGroup[i].x = event.x - inGameGroup[i].x0
+                end
             end
         end
     end
@@ -291,7 +289,25 @@ function inGame()
             inGameGroup:insert(i_shard)
             table.insert(shakable, i_shard)
             table.insert(shrapnel, i_shard)
-            if #i_shard.polys == 5 then
+            if #i_shard.polys == 1 then
+                physics.addBody(i_shard, 
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]})
+            elseif #i_shard.polys == 2 then
+                physics.addBody(i_shard, 
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]})
+            elseif #i_shard.polys == 3 then
+                physics.addBody(i_shard, 
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]},
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[3]})
+            elseif #i_shard.polys == 4 then
+                physics.addBody(i_shard, 
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]},
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[3]},
+                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[4]})
+            elseif #i_shard.polys == 5 then
                 physics.addBody(i_shard, 
                                 {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
                                 {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[2]},
@@ -329,8 +345,8 @@ function inGame()
             if i == 1 then
                 physics.newJoint("weld", ground, i_shard, i_shard.x, i_shard.y + i_shard.height / 2)
             else
-                --i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
-                a = 0
+                i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
+                i_shard.isBullet = true
             end
         end
         shard_list = nil
@@ -445,8 +461,10 @@ end
 function startLevel(event)
     if event.phase == "ended" then
         selectedLevel = event.target.id
-        levelSelectGroup:removeSelf()
-        inGame()
+        if selectedLevel <= completedLevels + 1 then
+            levelSelectGroup:removeSelf()
+            inGame()
+        end
     end
 end
 
@@ -456,5 +474,15 @@ function returnToMain(event)
         mainMenu()
     end
 end
+
+function onKeyEvent(event)
+    if event.phase == "down" and event.keyName == "back" then
+        inGameGroup:removeSelf()
+        selectedLevel = 1
+        mainMenu()
+    end
+end
+
+Runtime:addEventListener("key", onKeyEvent)
 
 mainMenu()
