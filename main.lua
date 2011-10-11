@@ -32,7 +32,7 @@ local soundState = 1
 local gameState = 0 -- 0 = main menu; 1 = level select; 2 = in game
 audio.setVolume(0.0)
 local selectedLevel = 1
-local completedLevels = 2
+local completedLevels = 9
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
@@ -92,10 +92,10 @@ function levelSelectMenu()
     local levelButtons = {}
     local grayOuts = {}
     
-    local levelsPerRow = 2
+    local levelsPerRow = 4
     
-    for i=1,4 do
-        levelButtons[i] = display.newImage(("level" .. i .. "Button.png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
+    for i=1,7 do
+        levelButtons[i] = display.newImage((i .. ".png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
         grayOuts[i] = display.newImage(("leveloverlay.png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
         levelButtons[i].id = i
         grayOuts[i].id = i
@@ -293,6 +293,7 @@ function inGame()
                 i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
                 i_shard.isBullet = true
             end
+            i_shard.x0 = 0
         end
         shard_list = nil
     end
@@ -317,7 +318,7 @@ function inGame()
                 end
                 if b.x then
                     b:removeSelf()
-                    b = nil
+                    --b = nil
                     shard_list = isDead
                     addShards()
                 else
@@ -433,7 +434,7 @@ function inGame()
     
     -- Load level from file
     local function loadLevel()
-        local path = system.pathForFile("level" .. selectedLevel .. ".txt", system.ResourceDirectory)
+        local path = system.pathForFile("level_docs/level" .. selectedLevel .. ".txt", system.ResourceDirectory)
         
         local fh, reason = io.open(path, "r")
         
