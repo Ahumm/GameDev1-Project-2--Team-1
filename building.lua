@@ -21,9 +21,9 @@ function Building:create(x, y, btype, status, bldingSet, shardSheet)
     elseif btype == 3 then
         bldng.poly = {{-25,-141,25,-141,25,179,-25,179},{-80,-179,80,-179,80,-141,-80,-141}}
     elseif btype == 4 then
-        bldng.poly = {{}}
+        bldng.poly = {{-140,-45,131,-45,113,54,-136,54}}
     elseif btype == 5 then
-        bldng.poly = {{}}
+        bldng.poly = {{-75,55,74,55,74,129,-75,129},{59}}
     elseif btype == 6 then
         bldng.poly = {{-95,-41,-72,-81,3,-42,3,87,-95,87},{4,37,94,37,94,87,4,87},{11,-86,31,-86,31,35,11,35},{39,-86,57,-86,57,35,39,35},{63,-86,83,-86,83,35,63,35}}
     elseif btype == 7 then
@@ -66,9 +66,15 @@ function Building:create(x, y, btype, status, bldingSet, shardSheet)
                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 2, 1), {{-80,-179,80,-179,80,-141,-80,-141},{-24,-142,25,-142,25,-60,-25,-72}}))
                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 3, 1), {{-29,-72,20,-59,20,56,-29,94}}))
                            elseif bldng.btype == 4 then
-                               a = 0
+                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 1, 1), {{-136,13,-26,39,-26,54,-136,54}}))
+                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 2, 1), {{-18,-45,132,-45,132,-30,-18,-30}}))
+                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 3, 1), {{-140,-45,-21,-45,-21,-13,-140,-13}}))
+                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 4, 1), {{-117,-12,-7,-12,-7,38,-117,12}}))
                            elseif bldng.btype == 5 then
-                               a = 0
+                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 1, 1), {{-75,103,18,68,73,102,73,129,-75,129}}))
+                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 2, 1), {{59}}))
+                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 3, 1), {{0,56,74,56,74,102}}))
+                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 4, 1), {{-75,56,-2,56,16,68,-75,102}}))
                            elseif bldng.btype == 6 then
                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 1, 1), {{-94,75,94,75,94,87,-94,87}}))
                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 2, 1), {{-94,-41,-75,-82,2,-42,-94,-32}}))
@@ -76,7 +82,7 @@ function Building:create(x, y, btype, status, bldingSet, shardSheet)
                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 4, 1), {{39,-86,57,-86,57,35,39,35}}))
                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 5, 1), {{63,-86,83,-86,83,35,63,35}}))
                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 6, 1), {{-95,-30,3,-39,3,38,-95,6}}))
-                              table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 7, 1), {{-95,6,2,38,2,78,-95,74},{3,39,94,39,94,74,3,74}}))
+                              table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 7, 1), {{-95,6,2,38,2,74,-95,74},{3,39,94,39,94,74,3,74}}))
                            elseif bldng.btype == 7 then
                               table.insert(shards, Shard:create(bldng.x, bldng.y, vx, vy, f_x, f_y, sprite.newSpriteSet(bldng.shardSheet, 1, 1), {{-73,-32,71,-32,71,11,-73,11}}))
                            elseif bldng.btype == 8 then

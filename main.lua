@@ -177,18 +177,18 @@ function inGame()
         buildingSets[3] = bldSet
         shardSheets[3] = shrdSheet
         -- 4
-        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSheet = sprite.newSpriteSheet("GasStation.png", 280,110)
         local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
 
-        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+        local shrdSheet = sprite.newSpriteSheet("GasStationRemains.png", 280,110)
 
         buildingSets[4] = bldSet
         shardSheets[4] = shrdSheet
         -- 5
-        local bldSheet = sprite.newSpriteSheet("building1.png", 200, 300)
+        local bldSheet = sprite.newSpriteSheet("DonutShop.png", 150,260)
         local bldSet = sprite.newSpriteSet(bldSheet, 1, 1)
 
-        local shrdSheet = sprite.newSpriteSheet("building2_shrapnel.png", 200,300)
+        local shrdSheet = sprite.newSpriteSheet("DonutShopShards.png", 150,260)
 
         buildingSets[5] = bldSet
         shardSheets[5] = shrdSheet
@@ -237,9 +237,9 @@ function inGame()
                 elseif letter == "3" then
                     lencheck = 16
                 elseif letter == "4" then
-                    lencheck = 0
+                    lencheck = 28
                 elseif letter == "5" then
-                    lencheck = 0
+                    lencheck = 15
                 elseif letter == "6" then
                     lencheck = 19
                 elseif letter == "7" then
@@ -269,7 +269,7 @@ function inGame()
                     elseif #bld.poly == 2 then
                         if #bld.poly[2] == 1 then
                             physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
-                                                 {density = 3.0, friction = 0.5, bounce = 0.3, radius = bld.poly[2]})
+                                                 {density = 3.0, friction = 0.5, bounce = 0.3, radius = bld.poly[2][1]})
                         else
                             physics.addBody(bld, {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[1]},
                                                  {density = 3.0, friction = 0.5, bounce = 0.3, shape = bld.poly[2]})
@@ -388,8 +388,13 @@ function inGame()
             table.insert(shakable, i_shard)
             table.insert(shrapnel, i_shard)
             if #i_shard.polys == 1 then
-                physics.addBody(i_shard, 
-                                {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]})
+                if #i_shard.polys[1] == 1 then
+                    physics.addBody(i_shard, 
+                                    {density=3.0,friction=0.4, bounce=0.4, radius = i_shard.polys[1][1]})
+                else
+                    physics.addBody(i_shard, 
+                                    {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]})
+                end
             elseif #i_shard.polys == 2 then
                 physics.addBody(i_shard, 
                                 {density=3.0,friction=0.4, bounce=0.4, shape = i_shard.polys[1]},
