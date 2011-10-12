@@ -1043,6 +1043,5 @@ for i, v in pairs(highScore) do
     end
 end
 
-completedLevels = 2
-
 mainMenu()
+
