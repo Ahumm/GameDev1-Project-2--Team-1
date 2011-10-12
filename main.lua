@@ -134,6 +134,8 @@ function inGame()
     local eq_power = 0
     local shard_list = nil
     local shake_dir = 1
+    local score = 0
+    local quota = 0
     
     local background = display.newImage("DayBkgrd2.png", 0, display.contentHeight - 500)
     background.x = display.contentCenterX
@@ -175,7 +177,6 @@ function inGame()
     local function worldTouch(event)
         if event.phase == "began" then
             if event.y > display.contentHeight - GROUND_HEIGHT + 10 and not post_eq and not eq then
-                scoreText.updateText("Karma Points: " .. "(".. event.x ..", ".. event.y ..")")
                 epicenter.x = event.x
                 epicenter.y = event.y
                 epicenter.isVisible = true
@@ -386,6 +387,8 @@ function inGame()
                     end
                 end
                 if b.x then
+                    score = score + b.value
+                    scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
                     b:removeSelf()
                     shard_list = isDead
                     addShards()
@@ -544,6 +547,12 @@ function inGame()
         
         contents = fh:read("*l")
         
+        quota = tonumber(contents)
+        
+        scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
+        
+        contents = fh:read("*l")
+        
         buildingSets = {}
         shardSheets = {}
         
@@ -620,10 +629,13 @@ function inGame()
         buildingSets[9] = bldSet
         shardSheets[9] = shrdSheet
         
+        local flag = 0
         local i = 1
         while i <= (WORLD_WIDTH / MAP_UNIT) do
             local letter = string.sub(contents, i, i)
-            if letter ~= "g" then
+            if letter == "f" then 
+                flag = 1
+            elseif letter ~= "g" then
                 local lencheck = 1
                 if letter == "1" then
                     lencheck = 10
@@ -653,9 +665,10 @@ function inGame()
                     local bld = Building:create((i + (lencheck / 2)) * MAP_UNIT - ((WORLD_WIDTH / 2) - (display.contentWidth / 2)),
                                                 display.contentHeight - GROUND_HEIGHT,
                                                 fucklua,
-                                                1,
+                                                flag,
                                                 buildingSets[fucklua],
                                                 shardSheets[fucklua])
+                    flag = 0
                     table.insert(buildings, bld)
                     table.insert(shakable, bld)
                     inGameGroup:insert(bld)
@@ -817,5 +830,7 @@ for i, v in pairs(highScore) do
         break
     end
 end
+
+completedLevels = 9
 
 mainMenu()
