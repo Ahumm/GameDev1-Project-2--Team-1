@@ -184,8 +184,9 @@ function inGame()
     earthquakeSound = audio.loadSound("Earthquake1.wav")
     breakingSound = audio.loadSound("LongCrashandrattle.wav")
     startSound = audio.loadSound("LevelStart.wav")
-    winSound = audio.loadSound("LevelWin.wav")
-    failSound = audio.loadSound("Fail.wav")
+    winSound = audio.loadSound("LevelCompleted.wav")
+    failSound = audio.loadSound("LevelFailed.wav")
+    hitSound = audio.loadSound("buildinghit.wav")
     --BGChannel = audio.play(BGSound, {loops = -1})
     
     local function worldTouch(event)
@@ -532,6 +533,7 @@ function inGame()
             if event.other == ground then
                 print("Wooops")
             else
+                audio.play(hitSound)
                 local damage = 0
                 local vx = 0
                 local vy = 0
