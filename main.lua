@@ -137,14 +137,14 @@ function inGame()
     local score = 0
     local quota = 0
     
-    local background = display.newImage("Background90.png", 0, display.contentHeight - 500)
+    local background = display.newImage("Background90.png", 0, display.contentHeight - 550)
     background.x = display.contentCenterX
     inGameGroup:insert(background)
     
-    local background2 = display.newImage("Background90.png", background.x - (1.5 *background.width), display.contentHeight - 500)
+    local background2 = display.newImage("Background90.png", background.x - (1.5 *background.width), display.contentHeight - 550)
     inGameGroup:insert(background2)
     
-    local background3 = display.newImage("Background90.png", background.x + (0.5 * background.width), display.contentHeight - 500)
+    local background3 = display.newImage("Background90.png", background.x + (0.5 * background.width), display.contentHeight - 550)
     inGameGroup:insert(background3)
     
     local epicenterSheet = sprite.newSpriteSheet("crosshair.png", 16, 16)
@@ -152,6 +152,12 @@ function inGame()
     local epicenter = sprite.newSprite(epicenterSet)
     epicenter.isVisible = false
     inGameGroup:insert(epicenter)
+    
+    local karmaThingSheet = sprite.newSpriteSheet("KarmaSprite.png", 80, 65)
+    local karmaThingSet = sprite.newSpriteSet(karmaThingSheet, 1, 7)
+    sprite.add(karmaThingSet, "twinkle", 1, 7, 120)
+    local karmaThing = sprite.newSprite(karmaThingSet)
+    karmaThing.isVisible = false
     
     local scoreText = display.newText(inGameGroup, "Karma Points: ", 4, -6, "cityburn", 22)
     scoreText:setTextColor(255, 255, 255)
@@ -368,6 +374,14 @@ function inGame()
         timer.performWithDelay(125, function() return end_fire(explosions) end)
     end
     
+    function karmaTouch(event)
+        if event.phase == "ended" then
+            score = score + 3000
+            scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
+            karmaThing:removeSelf()
+        end
+    end
+    
     damage_building = function(b, damage, vx, vy, ox, oy)
         if b and not b.dead then
             b.takeDamage(damage)
@@ -389,6 +403,15 @@ function inGame()
                 if b.x then
                     score = score + b.value
                     scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
+                    if b.status == 1 then
+                        inGameGroup:insert(karmaThing)
+                        karmaThing.x = b.x
+                        karmaThing.y = b.y
+                        karmaThing.isVisible = true
+                        karmaThing:prepare("twinkle")
+                        karmaThing:play()
+                        karmaThing:addEventListener("touch", karmaTouch)
+                    end                   
                     b:removeSelf()
                     shard_list = isDead
                     addShards()
@@ -464,6 +487,8 @@ function inGame()
     local function acc(event)
         if event.isShake == true and eq == false and epicenter.isVisible and post_eq == false then
             timer.performWithDelay(2000, endQuake)
+            score = score - 50
+            scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
             gauge_border.isVisible = true
             gauge.isVisible = true
             eq = true
