@@ -815,6 +815,13 @@ function inGame()
                                                 flag,
                                                 buildingSets[fucklua],
                                                 shardSheets[fucklua])
+                    if flag == 1 then
+                        local glow = display.newImage(inGameGroup, "KarmaGlow.png")
+                        glow.x = bld.x
+                        glow.y = bld.y
+                        glow.alpha = 0.045
+                        glow:scale(5,5)
+                    end
                     flag = 0
                     table.insert(buildings, bld)
                     table.insert(shakable, bld)
