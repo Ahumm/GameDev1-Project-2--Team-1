@@ -52,12 +52,16 @@ function mainMenu()
 
     -- Add buttons
     --local newGameButton = display.newImage("newGameButton.png", display.contentCenterX - 48, display.contentCenterY + 60)
-    local newGameButton = display.newImage("NewGame.png", display.contentCenterX - 48, display.contentCenterY + 60)
+    local newGameButton = display.newImage("NewGame.png")
+    newGameButton.x = display.contentCenterX
+    newGameButton.y = display.contentCenterY - 70
     newGameButton.id = newGame
     mainMenuGroup:insert(newGameButton)
     
     --local levelSelectButton = display.newImage("levelSelectButton.png", display.contentCenterX - 48, display.contentCenterY + 120)
-    local levelSelectButton = display.newImage("levelSelectButton.png", display.contentCenterX - 48, display.contentCenterY + 120)
+    local levelSelectButton = display.newImage("LevelSelect.png")
+    levelSelectButton.x = display.contentCenterX
+    levelSelectButton.y = display.contentCenterY
     levelSelectButton.id = levelSelect
     mainMenuGroup:insert(levelSelectButton)
     
@@ -310,7 +314,6 @@ function inGame()
     local function endPostQuake()
         post_eq = false
         physics.setGravity(0, GRAVITY)
-        timer.performWithDelay(5000, checkWin)
     end
     
     local function addShards()
@@ -483,6 +486,7 @@ function inGame()
                 if b.x then
                     score = score + b.value
                     scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
+                    timer.performWithDelay(1000, checkWin)
                     if b.status == 1 then
                         inGameGroup:insert(karmaThing)
                         karmaThing.x = b.x
