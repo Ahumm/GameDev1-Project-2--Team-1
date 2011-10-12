@@ -337,7 +337,7 @@ function inGame()
                 loserText.alpha = 0.8
                 loserText.moves = false
                 ths = score
-                
+                audio.play(failSound)
                 local backLevelButton = display.newImage("RetryButton.png")
                 inGameGroup:insert(backLevelButton)
                 backLevelButton.x = display.contentWidth - backLevelButton.width / 2
