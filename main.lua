@@ -191,6 +191,7 @@ function inGame()
     sprite.add(karmaThingSet, "twinkle", 1, 7, 840)
     local karmaThing = sprite.newSprite(karmaThingSet)
     karmaThing.isVisible = false
+    karmaThing.found = false
     
     local scoreText = display.newText(inGameGroup, "Karma Points: ", 4, -6, "cityburn", 22)
     scoreText:setTextColor(255, 255, 255)
@@ -337,7 +338,7 @@ function inGame()
                     break 
                 end
             end
-            if not exists_hostile then
+            if not exists_hostile and karmaThing.found then
                 local loserText = display.newImage("LevelFailed.png")
                 inGameGroup:insert(loserText)
                 loserText.x = display.contentCenterX
@@ -507,6 +508,8 @@ function inGame()
             score = score + 3000
             scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
             karmaThing:removeSelf()
+            karmaThing.found = true
+            timer.performWithDelay(3000, checkWin)
         end
     end
     
@@ -828,6 +831,13 @@ function inGame()
                                                 flag,
                                                 buildingSets[fucklua],
                                                 shardSheets[fucklua])
+                    if flag == 1 then
+                        local glow = display.newImage(inGameGroup, "KarmaGlow.png")
+                        glow.x = bld.x
+                        glow.y = bld.y
+                        glow.alpha = 0.045
+                        glow:scale(5,5)
+                    end
                     flag = 0
                     table.insert(buildings, bld)
                     table.insert(shakable, bld)
