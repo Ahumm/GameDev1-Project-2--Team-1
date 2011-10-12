@@ -62,14 +62,14 @@ function mainMenu()
     mainMenuGroup:insert(levelSelectButton)
     
     -- Add the sound option
-    local soundButtonSheet = sprite.newSpriteSheet("SoundIcon.png", 30, 30)
+    local soundButtonSheet = sprite.newSpriteSheet("StereoIcon.png", 100, 50)
     local soundButtonSet = sprite.newSpriteSet(soundButtonSheet, 1, 2)
     sprite.add(soundButtonSet, "off", 2, 1, 1000)
     sprite.add(soundButtonSet, "on", 1, 1, 1000)
     soundButton = sprite.newSprite(soundButtonSet)
     mainMenuGroup:insert(soundButton)
-    soundButton.x = display.contentWidth - 50
-    soundButton.y = 50
+    soundButton.x = display.contentWidth - 70
+    soundButton.y = 40
     soundButton:prepare("off")
     soundButton:play()
     
@@ -236,6 +236,7 @@ function inGame()
                
                hostile_exist = true
                break
+            end
         end   
         if not hostiles_exist then
             
