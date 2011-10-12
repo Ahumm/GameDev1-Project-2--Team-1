@@ -267,33 +267,40 @@ function inGame()
     
     local function endLevel(event)
         if event.phase == "began" then
-            if ths < score then
-                ths = score
-            end
-            if ths > highScore[selectedLevel] then
-                highScore[selectedLevel] = ths
-                writeHS()
-                completedLevels = 0
-                for i, v in pairs(highScore) do
-                    if v > 0 then
-                        completedLevels = completedLevels + 1
+            if victory then
+                if ths < score then
+                    ths = score
+                end
+                if ths > highScore[selectedLevel] then
+                    highScore[selectedLevel] = ths
+                    writeHS()
+                    completedLevels = 0
+                    for i, v in pairs(highScore) do
+                        if v > 0 then
+                            completedLevels = completedLevels + 1
+                        end
                     end
                 end
+                inGameGroup:removeSelf()
+                selectedLevel = 1
+                levelSelectMenu()
+            else
+                inGameGroup:removeSelf()
+                selectedLevel = 1
+                levelSelectMenu()
             end
-            inGameGroup:removeSelf()
-            selectedLevel = 1
-            levelSelectMenu()
         end
     end
     
     local function checkWin()
-        if score >= quota then
+        if score >= quota and not victory then
             victory = true
             
             local victoryText = display.newImage("LevelCompleted.png")
             inGameGroup:insert(victoryText)
             victoryText.x = display.contentCenterX
             victoryText.y = 135
+            victoryText.alpha = 0.8
             victoryText.moves = false
             ths = score
             
@@ -305,7 +312,32 @@ function inGame()
             nextLevelButton:addEventListener("touch", endLevel)
             
             print("You won!")
-            
+        
+        elseif not victory then
+            local exists_hostile = false
+            for i, jim in pairs(buildings) do
+                if jim.btype ~= 2 and
+                   jim.btype ~= 8 then
+                    exists_hostile = true
+                    break 
+                end
+            end
+            if not exists_hostile then
+                local loserText = display.newImage("LevelFailed.png")
+                inGameGroup:insert(loserText)
+                loserText.x = display.contentCenterX
+                loserText.y = 135
+                loserText.alpha = 0.8
+                loserText.moves = false
+                ths = score
+                
+                local backLevelButton = display.newImage("RetryButton.png")
+                inGameGroup:insert(backLevelButton)
+                backLevelButton.x = display.contentWidth - backLevelButton.width / 2
+                backLevelButton.y = backLevelButton.height / 2 + 35
+                backLevelButton.moves = false
+                backLevelButton:addEventListener("touch", endLevel)
+            end            
         end
     end
     
