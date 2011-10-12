@@ -117,7 +117,7 @@ end
 function inGame()
     gameState = 2
     inGameGroup = display.newGroup()
-    
+    local damage_building
     local shakable = {}
     local shrapnel = {}
     local buildings = {}
@@ -147,7 +147,7 @@ function inGame()
     local scoreText = display.newText(inGameGroup, "Karma Points: ", 4, -6, "cityburn", 22)
     scoreText:setTextColor(255, 255, 255)
     scoreText.x_init = scoreText.x - scoreText.width/2
-    scoreText.updateText = function(text)
+    scoreText.updateText =  function(text)
                                scoreText.text = text
                                scoreText.x = scoreText.x_init + scoreText.width/2
                             end
@@ -292,7 +292,76 @@ function inGame()
         shard_list = nil
     end
     
-    local function damage_building(b, damage, vx, vy, ox, oy)
+    local function end_fire(fire)
+        for i, penguin in pairs(fire) do
+            if penguin.x then
+                penguin:removeSelf()
+            end
+        end
+    end
+    
+    local function add_explosion(x,y)
+        print("~~" .. x .. y)
+        local force = 25000
+        for i, penguin in pairs(shakable) do
+            angle = math.atan((math.abs(x - penguin.x))/(math.abs(y - penguin.y)))
+            distance = math.sqrt(math.pow(x - penguin.x,2) + math.pow(y - penguin.y,2)) / 30
+            if x >= penguin.x then
+                if y >= penguin.y then
+                    --Quad 2
+                    angle = angle + math.pi / 2
+                else
+                    --Quad 3
+                    angle = angle + math.pi                
+                end
+            else
+                if y >= penguin.y then
+                    --Quad 1
+                    angle = angle + 0
+                else
+                    --Quad 4
+                    angle = angle + 3 * math.pi / 2
+                end        
+            end
+            
+            x_force = math.cos(angle) * (force/math.pow(distance,1.3))
+            y_force = math.sin(angle) * -(force/math.pow(distance,1.3))
+            
+            if distance < 20 then
+                penguin:applyLinearImpulse(x_force, y_force, penguin.x, penguin.y)
+            end
+        end
+        for i, bld in pairs(buildings) do
+            angle = math.atan((math.abs(epicenter.x - bld.x))/(math.abs(epicenter.y - bld.y)))
+            distance = math.sqrt(math.pow(epicenter.x - bld.x,2) + math.pow(epicenter.y - bld.y,2)) / 30
+            
+            x_force = math.cos(angle) * (force/math.pow(distance,1.5))
+            y_force = math.sin(angle) * -(force/math.pow(distance,1.5))
+            damage = force / math.pow(distance, 2) / 15
+            if distance < 20 then
+                damage_building(bld, damage, x_force, y_force, epicenter.x, epicenter.y)
+            end
+        end
+        
+        local explosionSheet = sprite.newSpriteSheet("explosionSheet2.png", 42, 42)
+        local explosionSet = sprite.newSpriteSet(explosionSheet, 1, 5)
+        sprite.add(explosionSet, "boom", 1, 5, 25)
+        local explosions = {}
+        for i = 1,3 do
+            local explosion = sprite.newSprite(explosionSet)
+            inGameGroup:insert(explosion)
+            explosion.x = x + (i-2) * 49
+            explosion.y = y
+
+            explosion:prepare("boom")
+            explosion:play()
+            table.insert(explosions, explosion)
+            print("  Created a explosion at : (" .. explosion.x .. ", " .. explosion.y .. ")" )
+        end
+        timer.performWithDelay(125, function() return end_fire(explosions) end)
+    end
+    
+    damage_building = function(b, damage, vx, vy, ox, oy)
         if b and not b.dead then
             b.takeDamage(damage)
             local isDead = b.isDead(vx/6, vy/6, ox, oy)
@@ -314,8 +383,14 @@ function inGame()
                     b:removeSelf()
                     shard_list = isDead
                     addShards()
+                    if b.btype == 7 then -- tank
+                        add_explosion(b.x + 0,b.y - 11)                    
+                    end
+                    if b.btype == 4 then-- station
+                        print("Going to create a explosion at : (" .. b.x .. ", " .. b.y .. ")" )
+                        add_explosion(b.x + 55,b.y + 35)
+                    end
                 else
-                    print("lol")
                     for d, shrd in pairs(isDead) do
                         shrd:removeSelf()
                     end
@@ -336,7 +411,6 @@ function inGame()
             x = math.cos(angle) * (force/math.pow(distance,1.5))
             y = math.sin(angle) * -(force/math.pow(distance,1.5))
             damage = force / math.pow(distance, 2) / 10
-            print(damage)
             damage_building(bld, damage, x, y, epicenter.x, epicenter.y)
         end
         for i, penguin in pairs(shakable) do
@@ -402,14 +476,13 @@ function inGame()
             
             for i, bld in pairs(buildings) do
                 local damage = 12000 * math.min(1, math.abs(event.zInstant) / MAX_EQ_POWER) + 1
-                local distance = math.pow(math.sqrt(math.pow(epicenter.x - bld.x,2) + math.pow(epicenter.y -bld.y,2)) / 30, 2)
+                local distance = math.pow(math.sqrt(math.pow(epicenter.x - bld.x,2) + math.pow(epicenter.y -bld.y,2)) / 30, 2.5)
                 damage_building(bld, damage / distance, 0, 0, 0, 0)
             end
         end
     end
     
     local function onCollide(self, event)
-        print("OnCollide!")
         if event.phase == "began" then
             if event.other == ground then
                 print("Wooops")
@@ -419,7 +492,6 @@ function inGame()
                 local vy = 0
                 vx, vy = event.other:getLinearVelocity()
                 damage = math.sqrt(math.pow(vx,2) + math.pow(vy,2)) / 25
-                print(" damage: " .. damage)
                 
                 timer.performWithDelay(30, function() return damage_building(self, damage, vx, vy, event.other.x, event.other.y) end)
             end
