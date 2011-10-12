@@ -74,8 +74,8 @@ function mainMenu()
     soundButton:play()
     
     -- Main Menu Background Music
-    BGSound = audio.loadSound("song_of_storms.mp3")
-    BGChannel = audio.play(BGSound, {loops = -1})
+    --BGSound = audio.loadSound("song_of_storms.mp3")
+    --BGChannel = audio.play(BGSound, {loops = -1})
     
     newGameButton:addEventListener("touch", init)
     levelSelectButton:addEventListener("touch", init)
@@ -180,6 +180,14 @@ function inGame()
     gauge.isVisible = false
     gauge.moves = false
     
+    explosionSound = audio.loadSound("Explosion.wav")
+    earthquakeSound = audio.loadSound("Earthquake1.wav")
+    breakingSound = audio.loadSound("LongCrashandrattle.wav")
+    startSound = audio.loadSound("LevelStart.wav")
+    winSound = audio.loadSound("LevelWin.wav")
+    failSound = audio.loadSound("Fail.wav")
+    --BGChannel = audio.play(BGSound, {loops = -1})
+    
     local function worldTouch(event)
         if event.phase == "began" then
             if event.y > display.contentHeight - GROUND_HEIGHT + 10 and not post_eq and not eq then
@@ -217,6 +225,7 @@ function inGame()
 
     function shake_world()
         if eq then
+            audio.play(earthquakeSound)
             for i=1, inGameGroup.numChildren do
                 if inGameGroup[i].moves == nil then
                     inGameGroup[i].x = inGameGroup[i].x + (shake_dir * 7)
@@ -314,6 +323,7 @@ function inGame()
     end
     
     local function add_explosion(x,y)
+        audio.play(explosionSound)
         print("~~" .. x .. y)
         local force = 25000
         for i, penguin in pairs(shakable) do
@@ -411,7 +421,8 @@ function inGame()
                         karmaThing:prepare("twinkle")
                         karmaThing:play()
                         karmaThing:addEventListener("touch", karmaTouch)
-                    end                   
+                    end
+                    audio.play(breakingSound)
                     b:removeSelf()
                     shard_list = isDead
                     addShards()
@@ -725,6 +736,7 @@ function inGame()
             end
             i = i + 1
         end
+        audio.play(startSound)
     end
     
     inGameGroup:addEventListener("touch", worldTouch)
