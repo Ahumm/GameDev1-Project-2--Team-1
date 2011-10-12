@@ -188,7 +188,7 @@ function inGame()
     
     local karmaThingSheet = sprite.newSpriteSheet("KarmaSprite.png", 80, 65)
     local karmaThingSet = sprite.newSpriteSet(karmaThingSheet, 1, 7)
-    sprite.add(karmaThingSet, "twinkle", 1, 7, 120)
+    sprite.add(karmaThingSet, "twinkle", 1, 7, 840)
     local karmaThing = sprite.newSprite(karmaThingSet)
     karmaThing.isVisible = false
     
@@ -212,6 +212,14 @@ function inGame()
     gauge:setFillColor(230, 40, 40)
     gauge.isVisible = false
     gauge.moves = false
+    
+    local crackSheet = sprite.newSpriteSheet("quakezone.png", 100, 90)
+    local crackSet = sprite.newSpriteSet(crackSheet, 1, 5)
+    sprite.add(crackSet, "crack", 1, 5, 2000)
+    local crack = sprite.newSprite(crackSet)
+    crack.isVisible = false
+    crack.y = display.contentHeight - 45
+    
     
     explosionSound = audio.loadSound("Explosion.wav")
     earthquakeSound = audio.loadSound("Earthquake1.wav")
@@ -523,7 +531,7 @@ function inGame()
                 if b.x then
                     score = score + b.value
                     scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
-                    timer.performWithDelay(1000, checkWin)
+                    timer.performWithDelay(3000, checkWin)
                     if b.status == 1 then
                         inGameGroup:insert(karmaThing)
                         karmaThing.x = b.x
@@ -602,12 +610,17 @@ function inGame()
         gauge.isVisible = false
         gauge_border.isVisible = false
         post_eq = true
+        crack.isVisible = false
         timer.performWithDelay(500, endPostQuake)
     end
     
     local function acc(event)
         if event.isShake == true and eq == false and epicenter.isVisible and post_eq == false then
             timer.performWithDelay(2000, endQuake)
+            crack.x = epicenter.x
+            crack.isVisible = true
+            crack:prepare("crack")
+            crack:play()
             score = score - 50
             scoreText.updateText("Karma Points: " .. score .. " / " .. quota)
             gauge_border.isVisible = true
