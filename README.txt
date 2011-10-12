@@ -13,6 +13,4 @@ The Idea:
     You control earthquakes
     Takes place in cityscapes
     Trying to collapse some building while not collapsing others
-    Fault lines spread quakes, different ground types effect magnitude of quake
-    
     
