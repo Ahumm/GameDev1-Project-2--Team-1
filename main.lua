@@ -26,6 +26,7 @@ WORLD_HEIGHT = display.contentHeight * 3
 MAP_UNIT = 10
 BOUNCE_VALUE = .1
 
+karma_quota = 0
 
 local newGame = 1
 local levelSelect = 2
@@ -33,7 +34,7 @@ local soundState = 1
 local gameState = 0 -- 0 = main menu; 1 = level select; 2 = in game
 audio.setVolume(0.0)
 local selectedLevel = 1
-local numLevels = 7
+local numLevels = 8
 local completedLevels = 9
 
 local highScore = {}
@@ -691,7 +692,7 @@ end
 
 function loadHS()
     local path = system.pathForFile( "highScores.txt", system.DocumentsDirectory )
- 
+
     local fh = io.open( path, "r" )
 
     if fh then
@@ -740,7 +741,7 @@ loadHS()
 completedLevels = 0
 for i, v in pairs(highScore) do
     if v > 0 then
-        completedLevels = i
+        completedLevels = i + 1
         break
     end
 end
