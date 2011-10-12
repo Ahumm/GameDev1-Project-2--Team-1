@@ -5,7 +5,6 @@ require "Shard"
 require "Building"
 
 
-
 physics.start()
 --physics.setDrawMode("hybrid")
 
@@ -50,6 +49,11 @@ function mainMenu()
     mainMenuBG.y = display.contentCenterY
     mainMenuGroup:insert(mainMenuBG)
 
+    local title = display.newImage("Title.png")
+    title.x = display.contentCenterX
+    title.y = display.contentCenterY - 200
+    mainMenuGroup:insert(title)
+    
     -- Add buttons
     --local newGameButton = display.newImage("newGameButton.png", display.contentCenterX - 48, display.contentCenterY + 60)
     local newGameButton = display.newImage("NewGame.png")
@@ -607,7 +611,6 @@ function inGame()
         end
         epicenter.x = -100
         epicenter.y = -100
-        epicenter.isVisible = false
         eq_power = 0
         gauge.width = 0
         gauge.isVisible = false
@@ -622,6 +625,7 @@ function inGame()
             timer.performWithDelay(2000, endQuake)
             crack.x = epicenter.x
             crack.isVisible = true
+            epicenter.isVisible = false
             crack:prepare("crack")
             crack:play()
             score = score - 50
@@ -1038,5 +1042,7 @@ for i, v in pairs(highScore) do
         completedLevels = completedLevels + 1
     end
 end
+
+completedLevels = 2
 
 mainMenu()
