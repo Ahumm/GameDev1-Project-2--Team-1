@@ -510,7 +510,7 @@ function inGame()
     
     -- Load level from file
     local function loadLevel()
-        local path = system.pathForFile("level_docs/level" .. selectedLevel .. ".txt", system.ResourceDirectory)
+        local path = system.pathForFile("level" .. selectedLevel .. ".txt", system.ResourceDirectory)
         
         local fh, reason = io.open(path, "r")
         
