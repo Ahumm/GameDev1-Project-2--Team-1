@@ -35,7 +35,7 @@ local gameState = 0 -- 0 = main menu; 1 = level select; 2 = in game
 audio.setVolume(0.0)
 local selectedLevel = 1
 local numLevels = 8
-local completedLevels = 9
+local completedLevels = 5
 
 local highScore = {}
 
@@ -98,23 +98,50 @@ function levelSelectMenu()
     
     -- Add level selection buttons
     local levelButtons = {}
+    local levelButtonBackgrounds = {}
     local grayOuts = {}
     
-    local levelsPerRow = 4
+    local levelsPerRow = 2
+    local levelsPerCol = 2
     
     for i=1,numLevels do
-        levelButtons[i] = display.newImage((i .. ".png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
-        grayOuts[i] = display.newImage(("leveloverlay.png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
+        local BASE_X = -15
+        local BASE_Y = 180
+        local MULT_X = 160
+        local MULT_Y = 130
+        local BASE_X_2 = 400
+        local x_val = BASE_X + (((i - 1) % levelsPerRow ) + 1) * MULT_X + math.floor(i / (levelsPerRow + levelsPerCol + 1)) * BASE_X_2
+        local y_val = BASE_Y + MULT_Y * math.floor((i - 1 % 4)/2) - 2 * MULT_Y * math.floor(i/5) --math.floor((i % 4) / 2)--math.floor(math.floor(i / 4) / 2) * MULT_Y--levelsPerRow * MULT_Y  --) * MULT_Y + math.floor(i / (levelsPerRow + levelsPerCol + 1)) * MULT_Y
+        --local y_val = BASE_Y + ((math.floor(i / (levelsPerRow + 1)) / levelsPerCol) * MULT_Y)
+        
+        levelButtons[i] = display.newImage((i .. ".png"), 0,0)
+        levelButtons[i].x = x_val
+        levelButtons[i].y = y_val
+        
+        levelButtonBackgrounds[i] = display.newImage("numberbox.png", 0,0)
+        levelButtonBackgrounds[i].x = x_val
+        levelButtonBackgrounds[i].y = y_val
+        
+        grayOuts[i] = display.newImage(("leveloverlay.png"), 0,0)
+        grayOuts[i].x = x_val
+        grayOuts[i].y = y_val
+        
         levelButtons[i].id = i
         grayOuts[i].id = i
-        if completedLevels + 1 >= i then
+        levelButtonBackgrounds[i].id = i
+        
+        if completedLevels + 1 > i then
             grayOuts[i].alpha = 0
+        elseif completedLevels + 1 == i then
+            grayOuts[i].alpha = 0.3       
         else
             grayOuts[i].alpha = 0.8
         end
+        
         levelSelectGroup:insert(levelButtons[i])
-        levelSelectGroup:insert(levelButtons[i])
-        levelButtons[i]:addEventListener("touch", startLevel)
+        levelSelectGroup:insert(grayOuts[i])
+        levelSelectGroup:insert(levelButtonBackgrounds[i])
+        levelButtonBackgrounds[i]:addEventListener("touch", startLevel)
     end
     
     backButton:addEventListener("touch", returnToMain)
@@ -912,6 +939,6 @@ for i, v in pairs(highScore) do
     end
 end
 
-completedLevels = 9
+completedLevels = 5
 
 mainMenu()
