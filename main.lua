@@ -34,7 +34,6 @@ local gameState = 0 -- 0 = main menu; 1 = level select; 2 = in game
 audio.setVolume(0.0)
 local selectedLevel = 1
 local completedLevels = 9
-local building_keys = {}
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
@@ -145,14 +144,7 @@ function inGame()
     epicenter.isVisible = false
     inGameGroup:insert(epicenter)
     
-    local font = nil
-    for i, font_ in pairs(native.getFontNames()) do
-        if string.sub(font_, 1, 1) == "c" then
-           print(font_)
-           font = font_
-        end
-    end
-    local scoreText = display.newText(inGameGroup, "Karma Points: ", 6, 6, font, 22)
+    local scoreText = display.newText(inGameGroup, "Karma Points: ", 4, -6, "cityburn", 22)
     scoreText:setTextColor(255, 255, 255)
     scoreText.x_init = scoreText.x - scoreText.width/2
     scoreText.updateText = function(text)
@@ -301,8 +293,7 @@ function inGame()
     end
     
     local function damage_building(b, damage, vx, vy, ox, oy)
-        if b then
-            local key_id = b.id
+        if b and not b.dead then
             b.takeDamage(damage)
             local isDead = b.isDead(vx/6, vy/6, ox, oy)
             if isDead then
@@ -319,10 +310,8 @@ function inGame()
                         break
                     end
                 end
-                if not building_keys[key_id] then
-                    building_keys[key_id] = true
+                if b.x then
                     b:removeSelf()
-                    --b = nil
                     shard_list = isDead
                     addShards()
                 else
@@ -615,7 +604,6 @@ function inGame()
                     bld.collision = onCollide
                     bld:addEventListener("collision", bld)
                     bld.id = i
-                    building_keys[bld.id] = false
                     i = j - 1
                 end
             end
