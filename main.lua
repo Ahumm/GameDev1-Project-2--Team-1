@@ -733,13 +733,52 @@ function inGame()
     loadLevel()
 end
 
+function intro()
+    introGroup = display.newGroup()
+    
+    local introMovieSheet = sprite.newSpriteSheet("introsprite.png", 1000,600)
+    local stage = 1
+    local introSprites = {}
+    
+    function nextSlide(event)
+        if event.phase == "ended" then
+            print("switch")
+            if stage < 6 then
+                introSprites[stage]:removeSelf()
+                introSprites[stage].isVisible = false
+                stage = stage + 1
+                introGroup:insert(introSprites[stage])
+                introSprites[stage].isVisible = true
+                introSprites[stage]:addEventListener("touch", nextSlide)
+            else
+                introSprites[stage]:removeSelf()
+                introGroup:removeSelf()
+                inGame()
+            end
+        end
+    end
+    
+    for i=1,6 do
+        local introMovieSet = sprite.newSpriteSet(introMovieSheet, i, 1)
+        introSprites[i] = sprite.newSprite(introMovieSet)
+        introSprites[i].x = display.contentCenterX
+        introSprites[i].y = display.contentCenterY
+        introSprites[i]:scale(display.contentWidth / introSprites[i].width, display.contentHeight / introSprites[i].height)
+        introSprites[i].isVisible = false
+    end
+    
+    introGroup:insert(introSprites[stage])
+    introSprites[stage].isVisible = true
+    introSprites[stage]:addEventListener("touch", nextSlide)
+end
+
 function init(event)
     mode = event.target.id
     if event.phase == "ended" then
         if mode == newGame then
             mainMenuGroup:removeSelf()
             selectedLevel = 1
-            inGame()
+            intro()
         elseif mode == levelSelect then
             --local levelSelectAnimation = transition.to(mainMenuGroup, {alpha = 0, xScale = 1, yScale = 1, time = 400})
             mainMenuGroup:removeSelf()
