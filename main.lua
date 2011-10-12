@@ -211,8 +211,8 @@ function inGame()
     earthquakeSound = audio.loadSound("Earthquake1.wav")
     breakingSound = audio.loadSound("LongCrashandrattle.wav")
     startSound = audio.loadSound("LevelStart.wav")
-    winSound = audio.loadSound("LevelCompleted.wav")
-    failSound = audio.loadSound("LevelFailed.wav")
+    winSound = audio.loadSound("LevelWin.wav")
+    failSound = audio.loadSound("levelfail.wav")
     hitSound = audio.loadSound("buildinghit.wav")
     --BGChannel = audio.play(BGSound, {loops = -1})
     
@@ -369,7 +369,6 @@ function inGame()
     
     local function add_explosion(x,y)
         audio.play(explosionSound)
-        print("~~" .. x .. y)
         local force = 25000
         for i, penguin in pairs(shakable) do
             angle = math.atan((math.abs(x - penguin.x))/(math.abs(y - penguin.y)))
@@ -424,7 +423,6 @@ function inGame()
             explosion:prepare("boom")
             explosion:play()
             table.insert(explosions, explosion)
-            print("  Created a explosion at : (" .. explosion.x .. ", " .. explosion.y .. ")" )
         end
         timer.performWithDelay(125, function() return end_fire(explosions) end)
     end
@@ -475,7 +473,6 @@ function inGame()
                         add_explosion(b.x + 0,b.y - 11)                    
                     end
                     if b.btype == 4 then-- station
-                        print("Going to create a explosion at : (" .. b.x .. ", " .. b.y .. ")" )
                         add_explosion(b.x + 55,b.y + 35)
                     end
                 else
@@ -800,7 +797,6 @@ function intro()
     
     function nextSlide(event)
         if event.phase == "ended" then
-            print("switch")
             if stage < 6 then
                 introSprites[stage]:removeSelf()
                 introSprites[stage].isVisible = false
