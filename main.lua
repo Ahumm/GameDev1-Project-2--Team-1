@@ -163,6 +163,7 @@ function inGame()
     local shake_dir = 1
     local score = 0
     local quota = 0
+    local victory = false
     
     local background = display.newImage("Background90.png", 0, display.contentHeight - 550)
     background.x = display.contentCenterX
@@ -264,18 +265,44 @@ function inGame()
         end
     end
     
-    local function checkWin()
-        local hostiles_exist = false
-        for i, bid in pairs(buildings) do
-            if bid.btype == 1 or
-               bid.btype == 3 or
-               bid.btype == 6 then
-               
-               hostile_exist = true
-               break
+    local function endLevel(event)
+        if ths < score then
+            ths = score
+        end
+        if ths > highScore[selectedLevel] then
+            highScore[selectedLevel] = ths
+            writeHS()
+            completedLevels = 0
+            for i, v in pairs(highScore) do
+                if v > 0 then
+                    completedLevels = completedLevels + 1
+                end
             end
-        end   
-        if not hostiles_exist then
+        end
+        inGameGroup:removeSelf()
+        selectedLevel = 1
+        levelSelectMenu()
+    end
+    
+    local function checkWin()
+        if score >= quota then
+            victory = true
+            
+            local victoryText = display.newImage("LevelCompleted.png")
+            inGameGroup:insert(victoryText)
+            victoryText.x = display.contentCenterX
+            victoryText.y = 135
+            victoryText.moves = false
+            ths = score
+            
+            local nextLevelButton = display.newImage("NextLevelButton.png")
+            inGameGroup:insert(nextLevelButton)
+            nextLevelButton.x = display.contentCenterX - nextLevelButton.width / 2
+            nextLevelButton.y = nextLevelButton.height / 2 + 35
+            nextLevelButton.moves = false
+            nextLevelButton:addEventListener("touch", endLevel)
+            
+            print("You won!")
             
         end
     end
@@ -944,11 +971,8 @@ loadHS()
 completedLevels = 0
 for i, v in pairs(highScore) do
     if v > 0 then
-        completedLevels = i + 1
-        break
+        completedLevels = completedLevels + 1
     end
 end
-
-completedLevels = 5
 
 mainMenu()
