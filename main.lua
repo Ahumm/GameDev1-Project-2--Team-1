@@ -33,7 +33,10 @@ local soundState = 1
 local gameState = 0 -- 0 = main menu; 1 = level select; 2 = in game
 audio.setVolume(0.0)
 local selectedLevel = 1
+local numLevels = 7
 local completedLevels = 9
+
+local highScore = {}
 
 function mainMenu()
     mainMenuGroup = display.newGroup()
@@ -83,7 +86,10 @@ function levelSelectMenu()
     levelSelectGroup = display.newGroup()
     
     -- Load Background Image
-    local levelSelectBG = display.newImage("levelSelectBG.png")
+    --local levelSelectBG = display.newImage("levelSelectBG.png")
+    local levelSelectBG = display.newImage("LevelSelectBackground.png")
+    levelSelectBG.x = display.contentCenterX
+    levelSelectBG.y = display.contentCenterY
     levelSelectGroup:insert(levelSelectBG)
     
     local backButton = display.newImage("BackButton.png", display.contentWidth - 100, display.contentHeight - 50)
@@ -95,7 +101,7 @@ function levelSelectMenu()
     
     local levelsPerRow = 4
     
-    for i=1,7 do
+    for i=1,numLevels do
         levelButtons[i] = display.newImage((i .. ".png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
         grayOuts[i] = display.newImage(("leveloverlay.png"), (((i - 1) % levelsPerRow ) + 1) * 120, 100 + ((math.floor(i / (levelsPerRow + 1))) * 70))
         levelButtons[i].id = i
@@ -287,7 +293,6 @@ function inGame()
                 i_shard:applyLinearImpulse( i_shard.vel_x, i_shard.vel_y, i_shard.f_x, i_shard.f_y)
                 i_shard.isBullet = true
             end
-            i_shard.x0 = 0
         end
         shard_list = nil
     end
@@ -684,6 +689,60 @@ function onKeyEvent(event)
     end
 end
 
+function loadHS()
+    local path = system.pathForFile( "highScores.txt", system.DocumentsDirectory )
+ 
+    local fh = io.open( path, "r" )
+
+    if fh then
+        local i = 1
+        for line in fh:lines() do
+            highScore[i] = tonumber(line)
+            i = i + 1
+        end
+        
+        fh:close()
+    else
+       -- create file because it doesn't exist yet
+       fh = io.open( path, "w" )
+       
+       for i, v in pairs(highScore) do 
+           fh:write( v, "\n" )
+       end
+       io.close( fh )
+    end
+end
+
+function writeHS()
+    local path = system.pathForFile( "highScores.txt", system.DocumentsDirectory )
+ 
+    local fh = io.open( path, "w" )
+
+    if fh then
+        for i, v in pairs(highScore) do
+            fh:write( v, "\n" )
+        end
+        
+        fh:close()
+    else
+       print("What did you do?")
+    end
+end
+
 Runtime:addEventListener("key", onKeyEvent)
+
+for i=1,numLevels do
+    highScore[i] = 0
+end
+
+loadHS()
+
+completedLevels = 0
+for i, v in pairs(highScore) do
+    if v > 0 then
+        completedLevels = i
+        break
+    end
+end
 
 mainMenu()
