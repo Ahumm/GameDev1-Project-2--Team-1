@@ -137,14 +137,14 @@ function inGame()
     local score = 0
     local quota = 0
     
-    local background = display.newImage("DayBkgrd2.png", 0, display.contentHeight - 500)
+    local background = display.newImage("Background90.png", 0, display.contentHeight - 500)
     background.x = display.contentCenterX
     inGameGroup:insert(background)
     
-    local background2 = display.newImage("DayBkgrd2.png", background.x - (1.5 *background.width), display.contentHeight - 500)
+    local background2 = display.newImage("Background90.png", background.x - (1.5 *background.width), display.contentHeight - 500)
     inGameGroup:insert(background2)
     
-    local background3 = display.newImage("DayBkgrd2.png", background.x + (0.5 * background.width), display.contentHeight - 500)
+    local background3 = display.newImage("Background90.png", background.x + (0.5 * background.width), display.contentHeight - 500)
     inGameGroup:insert(background3)
     
     local epicenterSheet = sprite.newSpriteSheet("crosshair.png", 16, 16)
