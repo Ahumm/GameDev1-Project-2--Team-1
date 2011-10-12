@@ -76,6 +76,7 @@ function mainMenu()
     soundButton.y = 40
     soundButton:prepare("off")
     soundButton:play()
+    audio.setVolume(0.0)
     
     -- Main Menu Background Music
     --BGSound = audio.loadSound("song_of_storms.mp3")
@@ -299,6 +300,8 @@ function inGame()
     local function checkWin()
         if score >= quota and not victory then
             victory = true
+            
+            audio.play(winSound)
             
             local victoryText = display.newImage("LevelCompleted.png")
             inGameGroup:insert(victoryText)
