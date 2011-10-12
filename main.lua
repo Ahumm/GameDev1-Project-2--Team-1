@@ -221,9 +221,25 @@ function inGame()
         end
     end
     
+    local function checkWin()
+        local hostiles_exist = false
+        for i, bid in pairs(buildings) do
+            if bid.btype == 1 or
+               bid.btype == 3 or
+               bid.btype == 6 then
+               
+               hostile_exist = true
+               break
+        end   
+        if not hostiles_exist then
+            
+        end
+    end
+    
     local function endPostQuake()
         post_eq = false
         physics.setGravity(0, GRAVITY)
+        timer.performWithDelay(5000, checkWin)
     end
     
     local function addShards()
