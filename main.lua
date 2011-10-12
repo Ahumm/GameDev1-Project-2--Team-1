@@ -758,7 +758,7 @@ function returnToMain(event)
 end
 
 function onKeyEvent(event)
-    if event.phase == "down" and event.keyName == "back" then
+    if event.phase == "up" and event.keyName == "back" then
         if gameState == 0 then
             os.exit()
         elseif gameState == 1 then  
