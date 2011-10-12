@@ -410,8 +410,8 @@ function inGame()
     
     local function endQuake()
         eq = false
-        local FORCE_MULT = 27500
-        local FORCE_MIN = 2500
+        local FORCE_MULT = 19000
+        local FORCE_MIN = 700
         for i, bld in pairs(buildings) do
             force = FORCE_MULT * math.min(1, eq_power / MAX_EQ_POWER) + FORCE_MIN
             angle = math.atan((math.abs(epicenter.x - bld.x))/(math.abs(epicenter.y - bld.y)))
@@ -471,9 +471,9 @@ function inGame()
             shake_dir_start = shake_dir
             for i,penguin in pairs(shakable) do
                 if math.random(1,2) == 1 then
-                    penguin:applyLinearImpulse(-95, -3.5, penguin.x, penguin.y)
+                    penguin:applyLinearImpulse(-55, -1.5, penguin.x, penguin.y)
                 else
-                    penguin:applyLinearImpulse(95, -3.5, penguin.x, penguin.y)
+                    penguin:applyLinearImpulse(55, -1.5, penguin.x, penguin.y)
                 end
             end
             shake(i)
