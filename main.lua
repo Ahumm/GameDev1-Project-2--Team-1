@@ -266,22 +266,24 @@ function inGame()
     end
     
     local function endLevel(event)
-        if ths < score then
-            ths = score
-        end
-        if ths > highScore[selectedLevel] then
-            highScore[selectedLevel] = ths
-            writeHS()
-            completedLevels = 0
-            for i, v in pairs(highScore) do
-                if v > 0 then
-                    completedLevels = completedLevels + 1
+        if event.phase == "began" then
+            if ths < score then
+                ths = score
+            end
+            if ths > highScore[selectedLevel] then
+                highScore[selectedLevel] = ths
+                writeHS()
+                completedLevels = 0
+                for i, v in pairs(highScore) do
+                    if v > 0 then
+                        completedLevels = completedLevels + 1
+                    end
                 end
             end
+            inGameGroup:removeSelf()
+            selectedLevel = 1
+            levelSelectMenu()
         end
-        inGameGroup:removeSelf()
-        selectedLevel = 1
-        levelSelectMenu()
     end
     
     local function checkWin()
@@ -297,7 +299,7 @@ function inGame()
             
             local nextLevelButton = display.newImage("NextLevelButton.png")
             inGameGroup:insert(nextLevelButton)
-            nextLevelButton.x = display.contentCenterX - nextLevelButton.width / 2
+            nextLevelButton.x = display.contentWidth - nextLevelButton.width / 2
             nextLevelButton.y = nextLevelButton.height / 2 + 35
             nextLevelButton.moves = false
             nextLevelButton:addEventListener("touch", endLevel)
